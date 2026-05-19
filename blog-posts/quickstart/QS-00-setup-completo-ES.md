@@ -8,11 +8,11 @@
 
 ## TL;DR
 
-- Achilles necesita dos cosas: un lugar donde correr la plataforma + al menos una máquina con el agente
-- Puedes instalar en tu máquina local (Opción A, gratis) o en un VPS en la nube como DigitalOcean (Opción B, ~$8/mes)
-- El agente se instala en 3 comandos en Windows, Linux o macOS
-- Desde cero hasta ver tu primer Defense Score: 30 minutos
-- Este post te lleva paso a paso por la opción que elijas
+- Achilles tiene dos partes: la plataforma (dashboard + servidor) y el agente (en cada máquina a validar)
+- Este post cubre solo la plataforma — el agente lo instalamos en QS-03
+- Dos opciones: Docker en tu máquina local (Opción A, gratis) o VPS en la nube como DigitalOcean (Opción B, ~$8/mes)
+- Al terminar tendrás el dashboard corriendo con datos de ejemplo
+- Tiempo estimado: 30 min (local) o 40 min (DigitalOcean)
 
 ---
 
@@ -422,249 +422,36 @@ Desde tu navegador (en cualquier computadora): **http://167.99.123.45**
 
 Crea tu cuenta con "Registrarse" y sigue el **Paso 6** de la Sección 1A para conectar Elasticsearch.
 
----
-
-## Sección 2: Instalar el Agente en una Máquina
-
-Esta sección aplica **tanto si elegiste cloud como self-hosted**.
-
-El agente es el programa que corre en las máquinas que quieres validar.
-
-### Paso 1: Generar un token de instalación
-
-```
-Desde el dashboard → Endpoints → Tokens → [+ Nuevo Token]
-
-Nombre:     "Mi primera máquina"
-Válido por: 24 horas
-
-[ Crear ]
-
-Token generado:
-eyJhY2hpbGxlcyI6InRydWUiLCJ0b2tlbklkIjoiYWJjMTIzIn0...
-
-→ Copia este valor
-```
-
-### Paso 2: Descargar el agente
-
-```
-Settings → Agent → Descargar Agente
-
-Elige tu sistema:
-● Windows (64-bit)      → achilles-agent-windows.exe
-○ Linux (64-bit)        → achilles-agent-linux
-○ macOS Intel           → achilles-agent-macos-intel
-○ macOS Apple Silicon   → achilles-agent-macos-arm
-
-[ Descargar ]
-```
-
-Copia el archivo descargado a la máquina donde lo quieres instalar.
 
 ---
 
-### Instalar en Windows
-
-Abre **PowerShell como Administrador**:
-
-```powershell
-# Crear carpeta para el agente
-New-Item -ItemType Directory -Path "C:\achilles" -Force
-
-# Mover el ejecutable
-Move-Item .\achilles-agent-windows.exe C:\achilles\
-
-# Instalar como servicio de Windows
-C:\achilles\achilles-agent-windows.exe install `
-  --server http://IP-DE-TU-SERVIDOR:3000 `
-  --token eyJhY2hpbGxlcyI6...
-
-# Verificar que está corriendo
-Get-Service AchillesAgent
-```
+## Resumen: Instalar la Plataforma
 
 ```
-Status   Name            DisplayName
-------   ----            -----------
-Running  AchillesAgent   Achilles Security Agent  ✓
-```
-
-**¿Cuál es la IP de tu servidor?**
-- Si instalaste con Docker en la misma máquina: `http://localhost:3000`
-- Si Docker está en otra máquina de tu red: `http://192.168.1.X:3000`
-- Si Achilles está en DigitalOcean: `http://IP-PUBLICA-DEL-DROPLET:3000`
-
----
-
-### Instalar en Linux
-
-```bash
-# Dar permisos de ejecución
-chmod +x achilles-agent-linux
-
-# Instalar como servicio del sistema (requiere sudo)
-sudo ./achilles-agent-linux install \
-  --server http://IP-DE-TU-SERVIDOR:3000 \
-  --token eyJhY2hpbGxlcyI6...
-
-# Verificar que está corriendo
-systemctl status achilles-agent
-```
-
-```
-● achilles-agent.service - Achilles Security Agent
-   Active: active (running) since ...  ✓
-```
-
----
-
-### Instalar en macOS
-
-```bash
-# Dar permisos de ejecución
-chmod +x achilles-agent-macos-arm  # o -intel según tu Mac
-
-# Instalar (requiere sudo)
-sudo ./achilles-agent-macos-arm install \
-  --server http://IP-DE-TU-SERVIDOR:3000 \
-  --token eyJhY2hpbGxlcyI6...
-
-# Verificar
-sudo launchctl list | grep achilles
-# -  0  io.achilles.agent  ✓
-```
-
----
-
-## Paso 3: Confirmar que la Máquina Aparece en el Dashboard
-
-Vuelve al dashboard → **Endpoints**:
-
-```
-ENDPOINTS                                    1 online
-
-Hostname        Sistema    Versión   IP              Estado
-────────────────────────────────────────────────────────────
-MI-PC-01        Windows    1.4.2     192.168.1.45    🟢 Online
-```
-
-Debería aparecer en menos de **60 segundos**.
-
-Si no aparece, revisa la sección de solución de problemas al final.
-
----
-
-## Paso 4: Tu Primer Test (5 minutos)
-
-Con la máquina conectada, ejecuta tu primera simulación:
-
-```
-Browser → busca "PowerShell Encoded" → click en el resultado
-
-[ Compilar ]  →  espera ~10 segundos
-
-[ Asignar a Agente ]
-Máquina: MI-PC-01
-Horario: Ahora mismo
-[ Asignar ]
-```
-
-Espera 60 segundos y ve a **Analytics → Executions**:
-
-```
-PowerShell Encoded Command   MI-PC-01   ✅ Protegido   hace 45 seg
-```
-
-¡Listo! Ejecutaste tu primer test de seguridad real.
-
----
-
-## Solución de Problemas Comunes
-
-### El agente no aparece en el dashboard
-
-```
-Causa más común: no llega al servidor
-
-Verificar conectividad (desde la máquina del agente):
-  Windows:  Test-NetConnection -ComputerName IP-SERVIDOR -Port 3000
-  Linux/Mac: curl http://IP-SERVIDOR:3000/health
-
-Si falla: revisar firewall en el servidor
-  → El puerto 3000 debe estar abierto para la red interna
-
-Ver logs del agente:
-  Windows:  Get-EventLog -LogName Application -Source AchillesAgent -Newest 10
-  Linux:    journalctl -u achilles-agent -n 20
-  macOS:    log show --predicate 'subsystem == "io.achilles.agent"' --last 5m
-```
-
-### "Token inválido o expirado"
-
-```
-Los tokens son de un solo uso y expiran en 24 horas.
-Genera uno nuevo:
-Endpoints → Tokens → [+ Nuevo Token]
-```
-
-### Windows Defender bloqueó el ejecutable
-
-```
-Achilles genera el bloqueo porque el binario es nuevo para Defender.
-Dos opciones:
-
-1. Permitir manualmente:
-   Windows Security → Virus & threat protection → Protection history
-   → Encuentra el bloqueo → "Allow on device"
-
-2. O añadir exclusión de carpeta:
-   Windows Security → Virus & threat protection settings
-   → Add or remove exclusions → Add folder → C:\achilles\
-
-Nota: que Defender bloquee el agente sin firma es información útil
-en sí misma — significa que tu EDR detecta binarios sin firma.
-```
-
-### El dashboard está vacío después del login
-
-```
-Falta conectar Elasticsearch:
-Settings → Integrations → Analytics
-→ URL: http://elasticsearch:9200 (si usas Docker)
-→ [ Test Connection ] → [ Guardar ]
-```
-
----
-
-## Resumen: Los 4 Pasos
-
-```
-OPCIÓN B — DigitalOcean (~$8/mes):
-  1. Crear droplet Ubuntu + instalar Docker   (10 min)
-  2. Clonar repo + configurar .env con IP pública (10 min)
-  3. docker compose up + abrir puertos        (5 min)
-  4. Crear cuenta + conectar Elasticsearch    (5 min)
-  5. Instalar agente + primer test            (10 min)
-  Total: ~40 minutos
-
 OPCIÓN A — Local (gratis):
   1. Clonar repo + configurar .env            (10 min)
   2. docker compose up                        (5 min)
   3. Crear cuenta + conectar Elasticsearch    (5 min)
-  4. Instalar agente + primer test            (10 min)
+  Total: ~20 minutos
+
+OPCIÓN B — DigitalOcean (~$8/mes):
+  1. Crear droplet Ubuntu + instalar Docker   (10 min)
+  2. Clonar repo + configurar .env            (10 min)
+  3. Exponer puertos + docker compose up      (5 min)
+  4. Crear cuenta + conectar Elasticsearch    (5 min)
   Total: ~30 minutos
 ```
+
+El agente y el primer test se cubren en **QS-03** y **QS-04**.
 
 ---
 
 ## Puntos Clave
 
-✅ Dos opciones: local con Docker (gratis, Opción A) o VPS en la nube como DigitalOcean (~$8/mes, Opción B)
-✅ El agente se instala con 1 comando en Windows, Linux y macOS
-✅ La máquina aparece en el dashboard en menos de 60 segundos
-✅ El primer test tarda 2 minutos en ejecutarse y dar resultado
-✅ Si algo no funciona, los logs del agente explican exactamente qué pasa
+✅ Dos opciones: local con Docker (gratis) o VPS como DigitalOcean (~$8/mes)
+✅ La plataforma incluye dashboard, backend y Elasticsearch — todo con un solo comando
+✅ Los datos de ejemplo se cargan automáticamente al arrancar con `--profile elasticsearch`
+✅ Al terminar este post tienes el dashboard corriendo — el agente viene en QS-03
 
 ---
 
