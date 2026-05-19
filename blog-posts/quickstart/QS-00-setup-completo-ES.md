@@ -9,7 +9,7 @@
 ## TL;DR
 
 - Achilles necesita dos cosas: un lugar donde correr la plataforma + al menos una máquina con el agente
-- Puedes instalar en tu máquina local (gratis) o en un VPS en la nube como DigitalOcean (~$8/mes)
+- Puedes instalar en tu máquina local (Opción A, gratis) o en un VPS en la nube como DigitalOcean (Opción B, ~$8/mes)
 - El agente se instala en 3 comandos en Windows, Linux o macOS
 - Desde cero hasta ver tu primer Defense Score: 30 minutos
 - Este post te lleva paso a paso por la opción que elijas
@@ -38,30 +38,7 @@ Primero instalas la plataforma. Luego instalas el agente en tus máquinas.
 
 ## Elige Tu Opción para la Plataforma
 
-### Opción A: Servidor en la nube (ej. DigitalOcean) — ~$8/mes ☁️
-
-**Para quién:** Quieres que el dashboard sea accesible desde cualquier lugar y que los agentes puedan conectarse desde fuera de tu red local.
-
-```
-Pros:
-✅ Accesible desde cualquier lugar — URL pública para ti y los agentes
-✅ No consume recursos de tu máquina local
-✅ Los datos se quedan en TU servidor, no en un tercero
-
-Contras:
-→ Cuesta ~$8/mes (droplet básico en DigitalOcean o equivalente)
-→ Tú gestionas el servidor (actualizaciones, backups)
-→ Requiere los mismos pasos de instalación que la opción local
-```
-
-**Cómo empezar:** Sigue la **Sección 1B** de este post.
-
-> **Nota:** Achilles es open-source — no existe una versión "cloud gestionada".
-> Tú instalas, tú controlas. La nube es simplemente dónde eliges correrlo.
-
----
-
-### Opción B: Self-hosted con Docker — Gratis 🐳
+### Opción A: Self-hosted con Docker — Gratis 🐳
 
 **Para quién:** Quieres que todo quede en tu infraestructura, o no quieres pagar.
 
@@ -100,9 +77,69 @@ Si no tienes Docker:
 
 ---
 
+### Opción B: Servidor en la nube (ej. DigitalOcean) — ~$8/mes ☁️
+
+**Para quién:** Quieres que todo quede en tu infraestructura, o no quieres pagar.
+
+```
+Pros:
+✅ Completamente gratis
+✅ Todos los datos se quedan en tu red
+✅ Control total
+
+Contras:
+→ Necesitas una máquina dedicada (puede ser la misma donde
+   instalas el agente si es un equipo de prueba)
+→ Tú gestionas las actualizaciones
+```
+
+**Requisitos mínimos del servidor:**
+```
+Sistema operativo: Linux, macOS o Windows con Docker Desktop
+RAM: 2 GB mínimo (4 GB recomendado)
+Disco: 10 GB libres
+Docker: versión 24 o superior
+```
+
+**¿Tienes Docker instalado?**
+```bash
+docker --version
+# Docker version 24.x.x — ✓ listo
+
+docker compose version
+# Docker Compose version v2.x.x — ✓ listo
+```
+
+Si no tienes Docker:
+- Windows/Mac: descarga **Docker Desktop** desde https://docker.com/products/docker-desktop
+- Linux: sigue la guía oficial de tu distribución (Ubuntu: `apt install docker.io`)
+
+
+
+**Para quién:** Quieres que el dashboard sea accesible desde cualquier lugar y que los agentes puedan conectarse desde fuera de tu red local.
+
+```
+Pros:
+✅ Accesible desde cualquier lugar — URL pública para ti y los agentes
+✅ No consume recursos de tu máquina local
+✅ Los datos se quedan en TU servidor, no en un tercero
+
+Contras:
+→ Cuesta ~$8/mes (droplet básico en DigitalOcean o equivalente)
+→ Tú gestionas el servidor (actualizaciones, backups)
+→ Requiere los mismos pasos de instalación que la opción local
+```
+
+**Cómo empezar:** Sigue la **Sección 1B** de este post.
+
+> **Nota:** Achilles es open-source — no existe una versión "cloud gestionada".
+> Tú instalas, tú controlas. La nube es simplemente dónde eliges correrlo.
+
+---
+
 ## Sección 1A: Instalar en Local (Docker en tu propia máquina)
 
-*(Si elegiste la Opción A — DigitalOcean — salta a la Sección 1B)*
+*(Si elegiste la Opción B — DigitalOcean — salta a la Sección 1B)*
 
 ### Paso 1: Descargar Achilles
 
@@ -228,7 +265,7 @@ Ve a **Analytics** — deberías ver el dashboard con datos de ejemplo ya cargad
 
 ## Sección 1B: Instalar en DigitalOcean (VPS en la nube)
 
-*(Si elegiste la Opción B — Docker local — ya terminaste con la Sección 1A)*
+*(Si elegiste la Opción A — Docker local — ya terminaste con la Sección 1A, salta a la Sección 2)*
 
 ### Paso 1: Crear el droplet en DigitalOcean
 
@@ -603,7 +640,7 @@ Settings → Integrations → Analytics
 ## Resumen: Los 4 Pasos
 
 ```
-OPCIÓN A — DigitalOcean ($8/mes):
+OPCIÓN B — DigitalOcean (~$8/mes):
   1. Crear droplet Ubuntu + instalar Docker   (10 min)
   2. Clonar repo + configurar .env con IP pública (10 min)
   3. docker compose up + abrir puertos        (5 min)
@@ -611,7 +648,7 @@ OPCIÓN A — DigitalOcean ($8/mes):
   5. Instalar agente + primer test            (10 min)
   Total: ~40 minutos
 
-OPCIÓN B — Local (gratis):
+OPCIÓN A — Local (gratis):
   1. Clonar repo + configurar .env            (10 min)
   2. docker compose up                        (5 min)
   3. Crear cuenta + conectar Elasticsearch    (5 min)
@@ -623,7 +660,7 @@ OPCIÓN B — Local (gratis):
 
 ## Puntos Clave
 
-✅ Dos opciones: VPS en la nube (~$8/mes, DigitalOcean) o local con Docker (gratis)
+✅ Dos opciones: local con Docker (gratis, Opción A) o VPS en la nube como DigitalOcean (~$8/mes, Opción B)
 ✅ El agente se instala con 1 comando en Windows, Linux y macOS
 ✅ La máquina aparece en el dashboard en menos de 60 segundos
 ✅ El primer test tarda 2 minutos en ejecutarse y dar resultado
