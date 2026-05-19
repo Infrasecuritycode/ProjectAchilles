@@ -1,6 +1,6 @@
 # Conectar Tu Primera Máquina: El Agente en 10 Minutos
 
-> **Serie: Empezando con Project Achilles — Parte 3 de 6**
+> **Serie: Empezando con Project Achilles — Parte 2 de 6**
 
 **Tiempo de lectura:** 8 minutos | **Dificultad:** Principiante 🟢
 
@@ -251,7 +251,7 @@ información útil — significa que tu defensa detecta binarios sin firma.
 
 ## Próximo Post
 
-**QS-04: "Ejecutar Tu Primer Test — Ver Achilles en Acción"**
+**QS-03: "Ejecutar Tu Primer Test — Ver Achilles en Acción"**
 
 Ya tienes una máquina conectada. Ahora ejecutaremos el primer test de seguridad y veremos el resultado en tiempo real.
 
@@ -261,6 +261,6 @@ Ya tienes una máquina conectada. Ahora ejecutaremos el primer test de seguridad
 
 ---
 
-*Parte 3 de 6 en la serie "Empezando con Project Achilles".*
+*Parte 2 de 6 en la serie "Empezando con Project Achilles".*
 
 **Autor:** Kendra Mazara | **Fecha:** Mayo 2026

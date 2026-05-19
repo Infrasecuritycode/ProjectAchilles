@@ -1,6 +1,6 @@
 # Lo Que Ves Cuando Abres Achilles por Primera Vez
 
-> **Serie: Empezando con Project Achilles — Parte 2 de 6**
+> **Serie: Empezando con Project Achilles — Parte 3 de 6**
 
 **Tiempo de lectura:** 6 minutos | **Dificultad:** Principiante 🟢
 
@@ -230,7 +230,7 @@ Puedes filtrar por:
 
 ## Próximo Post
 
-**QS-03: "Conectar Tu Primera Máquina — El Agente en 10 Minutos"**
+**QS-04: "Ejecutar tu Primer Test"**
 
 Paso a paso: cómo instalar el agente en una máquina Windows, Linux o macOS y verla aparecer en el dashboard.
 
@@ -240,6 +240,6 @@ Paso a paso: cómo instalar el agente en una máquina Windows, Linux o macOS y v
 
 ---
 
-*Parte 2 de 6 en la serie "Empezando con Project Achilles".*
+*Parte 3 de 6 en la serie "Empezando con Project Achilles".*
 
 **Autor:** Kendra Mazara | **Fecha:** Mayo 2026

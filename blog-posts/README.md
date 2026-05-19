@@ -12,10 +12,10 @@ Para quien instala Achilles por primera vez. Sin conocimientos previos requerido
 
 | # | Post | Descripción |
 |---|------|-------------|
-| QS-00 | [Instala Project Achilles en 30 Minutos](quickstart/QS-00-setup-completo-ES.md) | Guía completa de instalación: cloud ($8/mes) o self-hosted con Docker. Agente en Windows, Linux y macOS. |
-| QS-01 | [¿Para Qué Sirve Project Achilles?](quickstart/QS-01-para-que-sirve-ES.md) | El problema que resuelve, qué es el Defense Score y qué NO hace Achilles. |
-| QS-02 | [Primer Vistazo al Dashboard](quickstart/QS-02-primer-vistazo-ES.md) | Tour por las 4 secciones principales: Analytics, Endpoints, Browser y Settings. |
-| QS-03 | [Conectar tu Primera Máquina](quickstart/QS-03-primera-maquina-ES.md) | Instalar el agente paso a paso en Windows, Linux y macOS. Solución de problemas. |
+| QS-00 | [Bienvenido a Project Achilles](quickstart/QS-00-orientacion-ES.md) | Qué es, qué no es, los 4 módulos y dónde encontrar docs, GitHub y Discord. |
+| QS-01 | [Instala la Plataforma](quickstart/QS-01-instalacion-plataforma-ES.md) | Docker local (gratis) o VPS en DigitalOcean (~$8/mes). Paso a paso completo. |
+| QS-02 | [Conectar tu Primera Máquina](quickstart/QS-02-primera-maquina-ES.md) | Instalar el agente paso a paso en Windows, Linux y macOS. Solución de problemas. |
+| QS-03 | [Primer Vistazo al Dashboard](quickstart/QS-03-primer-vistazo-ES.md) | Tour por las 4 secciones principales: Analytics, Endpoints, Browser y Settings. |
 | QS-04 | [Ejecutar tu Primer Test](quickstart/QS-04-primer-test-ES.md) | Buscar un test, compilarlo, asignarlo a un agente y leer el resultado. |
 | QS-05 | [Entender el Defense Score](quickstart/QS-05-defense-score-ES.md) | Qué mide, cómo se calcula, benchmarks por madurez y cómo presentarlo. |
 | QS-06 | [¿Qué Sigue?](quickstart/QS-06-que-sigue-ES.md) | Próximos pasos: bundles, alertas, Defender. Hoja de ruta completa de la serie. |

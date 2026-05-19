@@ -1,6 +1,6 @@
 # Instala Project Achilles en 30 Minutos: Guía Paso a Paso
 
-> **Serie: Empezando con Project Achilles — Guía de Instalación**
+> **Serie: Empezando con Project Achilles — Parte 1 de 6**
 
 **Tiempo de lectura:** 12 minutos | **Dificultad:** Principiante 🟢
 
@@ -457,9 +457,9 @@ El agente y el primer test se cubren en **QS-03** y **QS-04**.
 
 ## Próximo Post
 
-**QS-01: "¿Para Qué Sirve Project Achilles?"**
+**QS-02: "Conectar Tu Primera Máquina"**
 
-Ya tienes Achilles instalado. Ahora entendamos qué hace exactamente, qué significa el Defense Score y cómo usarlo para mejorar tu seguridad.
+Instala el agente paso a paso en Windows, Linux o macOS y haz aparecer tu primera máquina en el dashboard.
 
 ---
 
