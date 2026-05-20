@@ -79,43 +79,6 @@ Si no tienes Docker:
 
 ### Opción B: Servidor en la nube (ej. DigitalOcean) — ~$8/mes ☁️
 
-**Para quién:** Quieres que todo quede en tu infraestructura, o no quieres pagar.
-
-```
-Pros:
-✅ Completamente gratis
-✅ Todos los datos se quedan en tu red
-✅ Control total
-
-Contras:
-→ Necesitas una máquina dedicada (puede ser la misma donde
-   instalas el agente si es un equipo de prueba)
-→ Tú gestionas las actualizaciones
-```
-
-**Requisitos mínimos del servidor:**
-```
-Sistema operativo: Linux, macOS o Windows con Docker Desktop
-RAM: 2 GB mínimo (4 GB recomendado)
-Disco: 10 GB libres
-Docker: versión 24 o superior
-```
-
-**¿Tienes Docker instalado?**
-```bash
-docker --version
-# Docker version 24.x.x — ✓ listo
-
-docker compose version
-# Docker Compose version v2.x.x — ✓ listo
-```
-
-Si no tienes Docker:
-- Windows/Mac: descarga **Docker Desktop** desde https://docker.com/products/docker-desktop
-- Linux: sigue la guía oficial de tu distribución (Ubuntu: `apt install docker.io`)
-
-
-
 **Para quién:** Quieres que el dashboard sea accesible desde cualquier lugar y que los agentes puedan conectarse desde fuera de tu red local.
 
 ```
@@ -144,7 +107,7 @@ Contras:
 ### Paso 1: Descargar Achilles
 
 ```bash
-git clone https://github.com/projectachilles/achilles
+git clone https://github.com/projectachilles/ProjectAchilles
 cd achilles
 ```
 
@@ -313,7 +276,7 @@ apt install -y git
 ### Paso 4: Descargar Achilles
 
 ```bash
-git clone https://github.com/projectachilles/achilles
+git clone https://github.com/projectachilles/ProjectAchilles
 cd achilles
 ```
 
@@ -442,7 +405,7 @@ OPCIÓN B — DigitalOcean (~$8/mes):
   Total: ~30 minutos
 ```
 
-El agente y el primer test se cubren en **QS-03** y **QS-04**.
+El agente y el primer test se cubren en **QS-02** y **QS-04**.
 
 ---
 
@@ -451,7 +414,7 @@ El agente y el primer test se cubren en **QS-03** y **QS-04**.
 ✅ Dos opciones: local con Docker (gratis) o VPS como DigitalOcean (~$8/mes)
 ✅ La plataforma incluye dashboard, backend y Elasticsearch — todo con un solo comando
 ✅ Los datos de ejemplo se cargan automáticamente al arrancar con `--profile elasticsearch`
-✅ Al terminar este post tienes el dashboard corriendo — el agente viene en QS-03
+✅ Al terminar este post tienes el dashboard corriendo — el agente viene en QS-02
 
 ---
 
