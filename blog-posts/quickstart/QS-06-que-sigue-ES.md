@@ -176,7 +176,7 @@ Mes 2:
 
 ## La Pregunta que Ahora Puedes Responder
 
-Volvamos a donde empezamos en el Post QS-01:
+Volvamos a donde empezamos en el Post QS-00:
 
 > **Director:** "¿Estamos protegidos?"
 
@@ -193,7 +193,7 @@ Eso es seguridad medible. Eso es lo que Achilles te da.
 ## Recursos
 
 - 🔗 Documentación oficial: https://docs.projectachilles.io
-- 🔗 GitHub (código fuente): https://github.com/projectachilles/achilles
+- 🔗 GitHub (código fuente): https://github.com/projectachilles/ProjectAchilles
 - 🔗 Comunidad Discord: [Link en bio]
 - 📚 Continúa con el **Post P2-01** sobre visualización de gaps
 
