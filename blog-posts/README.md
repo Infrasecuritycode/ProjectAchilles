@@ -12,7 +12,7 @@ Para quien instala Achilles por primera vez. Sin conocimientos previos requerido
 
 | # | Post | Descripción |
 |---|------|-------------|
-| QS-00 | [Bienvenido a Project Achilles](quickstart/QS-00-orientacion-ES.md) | Qué es, qué no es, los 4 módulos y dónde encontrar docs, GitHub y Discord. |
+| QS-00 | [Bienvenido a Project Achilles](quickstart/QS-00-introduccion-ES.md) | Qué es, qué no es, los 4 módulos y dónde encontrar docs, GitHub y Discord. |
 | QS-01 | [Instala la Plataforma](quickstart/QS-01-instalacion-plataforma-ES.md) | Docker local (gratis) o VPS en DigitalOcean (~$8/mes). Paso a paso completo. |
 | QS-02 | [Conectar tu Primera Máquina](quickstart/QS-02-primera-maquina-ES.md) | Instalar el agente paso a paso en Windows, Linux y macOS. Solución de problemas. |
 | QS-03 | [Primer Vistazo al Dashboard](quickstart/QS-03-primer-vistazo-ES.md) | Tour por las 4 secciones principales: Analytics, Endpoints, Browser y Settings. |
