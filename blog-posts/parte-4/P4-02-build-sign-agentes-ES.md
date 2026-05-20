@@ -8,7 +8,7 @@
 
 ## TL;DR
 
-- El agente descargado desde el dashboard es el binario oficial — para la mayoría de entornos es suficiente
+- El agente descargado desde el dashboard es el binario oficial, para la mayoría de entornos es suficiente
 - Si tu EDR bloquea binarios no firmados, necesitas compilar y firmar con tu propio certificado
 - El proceso usa Go + `make build-all` y produce binarios para Windows, Linux y macOS en un solo comando
 - Windows requiere firma Authenticode (certificado PFX) y macOS usa firma ad-hoc
@@ -65,7 +65,7 @@ cd achilles/agent
 
 ### 3. Herramientas de firma (solo si necesitas firmar)
 
-**Windows Authenticode** — `osslsigncode`:
+**Windows Authenticode**, `osslsigncode`:
 ```bash
 # Linux (para firmar binarios Windows desde Linux):
 sudo apt install osslsigncode
@@ -78,7 +78,7 @@ osslsigncode --version
 # osslsigncode 2.x.x  ✓
 ```
 
-**macOS ad-hoc** — `rcodesign`:
+**macOS ad-hoc**, `rcodesign`:
 ```bash
 # macOS (con Homebrew):
 brew install rcodesign
@@ -107,7 +107,7 @@ dist/
 └── achilles-agent-macos-arm64          # macOS Apple Silicon
 ```
 
-El proceso de compilación usa CGO desactivado para generar binarios estáticos — no necesitan librerías externas en la máquina destino:
+El proceso de compilación usa CGO desactivado para generar binarios estáticos, no necesitan librerías externas en la máquina destino:
 
 ```bash
 # Lo que hace make build-all internamente:
@@ -128,7 +128,7 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
 make build-all VERSION=1.5.0-corp
 ```
 
-Esto incrusta la versión en el binario — aparece en el dashboard bajo la columna "Versión" de cada agente.
+Esto incrusta la versión en el binario, aparece en el dashboard bajo la columna "Versión" de cada agente.
 
 ---
 
@@ -207,7 +207,7 @@ make sign-windows \
 
 ## Paso 2B: Firmar para macOS (Ad-hoc)
 
-En macOS, la firma ad-hoc no requiere un certificado de Apple — es una firma local que identifica el binario y evita que macOS lo trate como "software desconocido" en muchos contextos.
+En macOS, la firma ad-hoc no requiere un certificado de Apple, es una firma local que identifica el binario y evita que macOS lo trate como "software desconocido" en muchos contextos.
 
 ```bash
 # Firma ad-hoc con rcodesign (no requiere cuenta de Apple Developer):
@@ -229,7 +229,7 @@ O con el Makefile:
 make sign-darwin
 ```
 
-> **Nota:** La firma ad-hoc no pasa Gatekeeper si el binario viene de Internet. Para distribución interna esto no es un problema — el agente se despliega por scripts/Intune/JAMF, no se descarga por el usuario.
+> **Nota:** La firma ad-hoc no pasa Gatekeeper si el binario viene de Internet. Para distribución interna esto no es un problema, el agente se despliega por scripts/Intune/JAMF, no se descarga por el usuario.
 
 ### Linux
 
@@ -325,9 +325,9 @@ El agente descarga el nuevo binario, verifica la firma digital, y se reinicia. S
 ## Puntos Clave
 
 ✅ `make build-all` compila para Windows, Linux y macOS en un comando
-✅ Windows requiere firma Authenticode — `osslsigncode` con un PFX
-✅ macOS usa firma ad-hoc — `rcodesign` sin necesidad de certificado de Apple
-✅ Linux no requiere firma — usa otros mecanismos de control de acceso
+✅ Windows requiere firma Authenticode, `osslsigncode` con un PFX
+✅ macOS usa firma ad-hoc, `rcodesign` sin necesidad de certificado de Apple
+✅ Linux no requiere firma, usa otros mecanismos de control de acceso
 ✅ Subir el PFX al dashboard automatiza la firma de todos los builds futuros
 ✅ Los agentes verifican la firma antes de aplicar actualizaciones remotas
 
@@ -335,7 +335,7 @@ El agente descarga el nuevo binario, verifica la firma digital, y se reinicia. S
 
 ## Próximo Post
 
-**P4-03: "Compliance — Evidencia para DORA, TIBER-EU e ISO 27001"**
+**P4-03: "Compliance. Evidencia para DORA, TIBER-EU e ISO 27001"**
 
 Cómo exportar los resultados de Achilles como evidencia para auditorías regulatorias. Qué necesita cada marco, qué aporta Achilles y cómo estructurar el paquete de evidencia.
 
@@ -345,6 +345,6 @@ Cómo exportar los resultados de Achilles como evidencia para auditorías regula
 
 ---
 
-*Parte 2 de 3 en la serie "Pro — Flujos Avanzados con Achilles".*
+*Parte 2 de 3 en la serie "Pro. Flujos Avanzados con Achilles".*
 
 **Autor:** Kendra Mazara | **Fecha:** Mayo 2026

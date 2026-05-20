@@ -8,7 +8,7 @@
 
 ## TL;DR
 
-- Un ejercicio Purple Team es Red y Blue trabajando juntos — no un Red Team atacando en secreto
+- Un ejercicio Purple Team es Red y Blue trabajando juntos, no un Red Team atacando en secreto
 - El flujo completo tiene 5 fases: intel → selección de tests → ejecución → análisis → remediación con retest
 - Achilles estructura todo ese flujo: importas la intel, ejecutas los tests, mides la cobertura y generas la evidencia
 - El resultado es un informe defendible: "probamos estas técnicas, esto detectamos, esto remediamos, esto mejoró"
@@ -31,7 +31,7 @@ El Purple Team no reemplaza al Red Team tradicional. Son para cosas distintas:
 - **Red Team**: valida que el Blue Team reaccione ante un ataque real (no saben cuándo ni cómo)
 - **Purple Team**: optimiza la cobertura de detección de forma sistemática (con evidencia para auditorías)
 
-Achilles es una plataforma de Purple Team continuo — puedes hacer este flujo cada semana, no solo una vez al año.
+Achilles es una plataforma de Purple Team continuo, puedes hacer este flujo cada semana, no solo una vez al año.
 
 ---
 
@@ -336,7 +336,7 @@ Anual:
 
 ## Próximo Post
 
-**P4-02: "Build & Sign — Compilar y Firmar tus Propios Agentes"**
+**P4-02: "Build & Sign. Compilar y Firmar tus Propios Agentes"**
 
 Cómo compilar el agente desde el código fuente, firmarlo con un certificado propio, y por qué importa para entornos con EDR enterprise que bloquean binarios sin firma.
 
@@ -346,6 +346,6 @@ Cómo compilar el agente desde el código fuente, firmarlo con un certificado pr
 
 ---
 
-*Parte 1 de 3 en la serie "Pro — Flujos Avanzados con Achilles".*
+*Parte 1 de 3 en la serie "Pro. Flujos Avanzados con Achilles".*
 
 **Autor:** Kendra Mazara | **Fecha:** Mayo 2026

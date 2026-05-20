@@ -9,10 +9,10 @@
 ## TL;DR
 
 - Con el quickstart completado ya tienes lo esencial: agente instalado, tests ejecutados, Defense Score visible
-- El siguiente nivel son los **bundles** — colecciones de tests que validan áreas completas de seguridad
+- El siguiente nivel son los **bundles**, colecciones de tests que validan áreas completas de seguridad
 - Configura **alertas** para que Achilles te avise cuando algo falla sin que tengas que revisar el dashboard
 - Conecta **Microsoft Defender** si lo usas para cruzar datos y cerrar alertas de tests automáticamente
-- Esta serie tiene 9 posts más en profundidad — este post es el mapa de lo que viene
+- Esta serie tiene 9 posts más en profundidad, este post es el mapa de lo que viene
 
 ---
 
@@ -108,7 +108,7 @@ Esto lo cubrimos en los **Posts P2-04 y P3-02**.
 
 Ahora que tienes la base, estos son los posts que siguen:
 
-**Parte 2 — Usando la Herramienta en Profundidad**
+**Parte 2. Usando la Herramienta en Profundidad**
 
 ```
 P2-01  Ver tus gaps visualmente: el Heatmap y el Treemap
@@ -128,7 +128,7 @@ P2-04  La librería completa: 500+ técnicas organizadas
        → Qué es MITRE ATT&CK y por qué importa
 ```
 
-**Parte 3 — Integraciones y Automatización**
+**Parte 3. Integraciones y Automatización**
 
 ```
 P3-01  Integración con Microsoft Defender
@@ -136,7 +136,7 @@ P3-02  Auto-Resolve: reducir el ruido del SOC
 P3-03  El agente Go: gestión de flota avanzada
 ```
 
-**Parte 4 — Pro**
+**Parte 4. Pro**
 
 ```
 P4-01  Purple Team workflow completo
@@ -205,7 +205,7 @@ Eso es seguridad medible. Eso es lo que Achilles te da.
 ✅ Los bundles son el siguiente nivel: 20-30 checks en una operación
 ✅ Las alertas hacen la validación continua sin esfuerzo manual diario
 ✅ La integración con Defender añade correlación y reduce ruido del SOC
-✅ Hay 9 posts más en la serie para profundizar — avanza a tu ritmo
+✅ Hay 9 posts más en la serie para profundizar, avanza a tu ritmo
 
 ---
 

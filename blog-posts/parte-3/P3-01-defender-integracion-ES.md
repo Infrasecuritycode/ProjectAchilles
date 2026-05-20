@@ -9,7 +9,7 @@
 ## TL;DR
 
 - Si usas Microsoft Defender for Endpoint, Achilles puede conectarse a él y mostrar ambos en el mismo dashboard
-- Verás tu **Defense Score** (Achilles) y tu **Secure Score** (Microsoft) juntos — y la diferencia entre los dos es información muy valiosa
+- Verás tu **Defense Score** (Achilles) y tu **Secure Score** (Microsoft) juntos, y la diferencia entre los dos es información muy valiosa
 - Achilles importa las alertas reales de Defender y las cruza con tus tests: "¿este ataque que simulamos generó una alerta?"
 - Configurarlo toma unos 20 minutos y requiere acceso al portal de Azure
 - Si no usas Defender o no tienes acceso a Azure, puedes saltar este post
@@ -66,7 +66,7 @@ Si no tienes acceso a Azure, comparte este post con tu administrador de sistemas
 
 ## Paso 1: Crear la Aplicación en Azure (15 minutos)
 
-Achilles se conecta a Defender a través de la API de Microsoft. Para eso necesitas registrar una "aplicación" en Azure — básicamente darle permiso a Achilles para leer datos de Defender.
+Achilles se conecta a Defender a través de la API de Microsoft. Para eso necesitas registrar una "aplicación" en Azure, básicamente darle permiso a Achilles para leer datos de Defender.
 
 ### 1.1 Registrar la aplicación
 
@@ -83,7 +83,7 @@ Achilles se conecta a Defender a través de la API de Microsoft. Para eso necesi
 5. Click "Register"
 ```
 
-Ahora estás en la página de tu nueva aplicación. Copia estos dos valores — los necesitarás más adelante:
+Ahora estás en la página de tu nueva aplicación. Copia estos dos valores, los necesitarás más adelante:
 
 ```
 Application (client) ID:  xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
@@ -180,7 +180,7 @@ La sincronización automática se ejecuta:
 
 ## Lo Que Ves Ahora en el Dashboard
 
-Ve a **Analytics** — verás una pestaña nueva: **Defender**.
+Ve a **Analytics**, verás una pestaña nueva: **Defender**.
 
 ### Los scores juntos
 
@@ -296,7 +296,7 @@ El permiso que diste (`SecurityEvents.Read.All`) es de **solo lectura**. Achille
 ✅ Conectar Defender toma ~20 minutos con acceso a Azure
 ✅ Ves Defense Score (Achilles) + Secure Score (Microsoft) juntos
 ✅ La correlación confirma qué técnicas generan alertas y cuáles no
-✅ El permiso es de solo lectura — Achilles no puede modificar nada en Microsoft
+✅ El permiso es de solo lectura. Achilles no puede modificar nada en Microsoft
 ✅ Credenciales cifradas localmente, nunca en texto plano
 ✅ Sincronización automática: alertas cada 5 min, scores cada 6h
 
@@ -304,9 +304,9 @@ El permiso que diste (`SecurityEvents.Read.All`) es de **solo lectura**. Achille
 
 ## Próximo Post
 
-**P3-02: "Auto-Resolve — Que Achilles Limpie las Alertas de Tests por Ti"**
+**P3-02: "Auto-Resolve. Que Achilles Limpie las Alertas de Tests por Ti"**
 
-Cuando ejecutas tests, Defender genera alertas reales. Eso es bueno — confirma que funciona. Pero esas alertas llenan la bandeja de tu equipo de seguridad. Auto-Resolve las cierra automáticamente.
+Cuando ejecutas tests, Defender genera alertas reales. Eso es bueno, confirma que funciona. Pero esas alertas llenan la bandeja de tu equipo de seguridad. Auto-Resolve las cierra automáticamente.
 
 ---
 

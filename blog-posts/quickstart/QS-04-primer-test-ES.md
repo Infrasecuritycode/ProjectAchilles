@@ -12,7 +12,7 @@
 - El proceso toma menos de 2 minutos: seleccionar test → asignar → ver resultado
 - El resultado es simple: ✅ Protegido o ❌ No detectado
 - El test recomendado para empezar: PowerShell con comando oculto (uno de los más usados por hackers reales)
-- Los tests son seguros — no dañan la máquina ni los datos
+- Los tests son seguros, no dañan la máquina ni los datos
 
 ---
 
@@ -199,7 +199,7 @@ La simulación se ejecutó sin que nadie lo notara.
 
 Después de ver cómo funciona con PowerShell, prueba algo que típicamente tiene gaps en muchas organizaciones:
 
-**Process Injection** — técnica donde un programa malicioso se "mete" dentro de otro proceso legítimo para esconderse.
+**Process Injection**, técnica donde un programa malicioso se "mete" dentro de otro proceso legítimo para esconderse.
 
 ```
 Browser → busca "Process Injection"
@@ -230,7 +230,7 @@ Browser → selecciona varios tests con ☐
 → Se ejecutarán en los próximos 3 minutos
 ```
 
-O mejor aún: Achilles tiene **bundles** — colecciones de tests relacionados que se ejecutan juntos. Los exploramos en la Parte 2 de esta serie.
+O mejor aún: Achilles tiene **bundles**, colecciones de tests relacionados que se ejecutan juntos. Los exploramos en la Parte 2 de esta serie.
 
 ---
 
@@ -257,14 +257,14 @@ Con esto, Achilles valida automáticamente cada semana sin que hagas nada. Si al
 ✅ Un test = una simulación de técnica de ataque + resultado en segundos
 ✅ ✅ Protegido = tu defensa lo detectó · ❌ No detectado = tienes un gap
 ✅ El proceso toma menos de 2 minutos: compilar → asignar → ver resultado
-✅ Los tests son seguros — no dañan datos ni modifican configuraciones
-✅ Empieza con PowerShell Encoded Command — fácil de interpretar y muy relevante
+✅ Los tests son seguros, no dañan datos ni modifican configuraciones
+✅ Empieza con PowerShell Encoded Command, fácil de interpretar y muy relevante
 
 ---
 
 ## Próximo Post
 
-**QS-05: "Entender el Defense Score — Qué Significa Ese Número"**
+**QS-05: "Entender el Defense Score. Qué Significa Ese Número"**
 
 Profundizamos en el número más importante de Achilles: qué es exactamente, cómo se calcula, y cómo usarlo para tomar decisiones.
 

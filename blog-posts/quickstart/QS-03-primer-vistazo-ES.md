@@ -9,7 +9,7 @@
 ## TL;DR
 
 - El dashboard de Achilles tiene 4 secciones principales: Analytics, Endpoints, Browser y Settings
-- El número más importante que verás es el **Defense Score** — tu porcentaje de protección
+- El número más importante que verás es el **Defense Score**, tu porcentaje de protección
 - La primera vez que lo abres no verás datos reales hasta conectar al menos una máquina
 - Puedes explorar el dashboard con datos de ejemplo antes de conectar nada
 - Este post es un tour completo: qué significa cada cosa y dónde hacer click primero
@@ -32,7 +32,7 @@ Cuando entras a Achilles por primera vez, verás una pantalla de login.
 └──────────────────────────────────────┘
 ```
 
-Crea una cuenta con tu email. La autenticación la maneja Clerk (el mismo sistema que usan muchas aplicaciones SaaS modernas) — no necesitas configurar nada especial.
+Crea una cuenta con tu email. La autenticación la maneja Clerk (el mismo sistema que usan muchas aplicaciones SaaS modernas), no necesitas configurar nada especial.
 
 ---
 
@@ -75,7 +75,7 @@ Defense Score: 73%
 Este porcentaje te dice: de todas las técnicas de ataque que Achilles probó, ¿cuántas detectó tu seguridad?
 
 - **73% significa:** por cada 100 intentos de ataque simulados, tu defensa detectó 73.
-- **No existe el 100%** en la práctica — siempre habrá algo que mejorar.
+- **No existe el 100%** en la práctica, siempre habrá algo que mejorar.
 - **Un buen objetivo inicial:** subir del baseline que tengas hoy.
 
 La flecha (↑ 4%) te dice si estás mejorando o empeorando respecto a la semana anterior.
@@ -151,7 +151,7 @@ Donde configuras todo: conectar Elasticsearch (la base de datos donde Achilles g
 El dashboard está vacío. Normal. Necesitas instalar el agente en al menos una máquina primero (lo hacemos en QS-03).
 
 **Día 2-3: Primeros resultados**
-Después de instalar el agente y ejecutar los primeros tests, el Defense Score aparece. Probablemente entre 50-70% — eso es normal para una primera medición.
+Después de instalar el agente y ejecutar los primeros tests, el Defense Score aparece. Probablemente entre 50-70%, eso es normal para una primera medición.
 
 **Día 7+: Tendencia visible**
 Empiezas a ver si la línea sube o baja. Cada cambio de configuración que hagas en tu seguridad se refleja en el score.
@@ -220,11 +220,11 @@ Puedes filtrar por:
 
 ## Puntos Clave
 
-✅ El Defense Score es el número más importante — tu porcentaje de protección
+✅ El Defense Score es el número más importante, tu porcentaje de protección
 ✅ Analytics, Endpoints, Browser y Settings son las 4 secciones principales
-✅ Los "Fallos" son tu lista de problemas a resolver — empieza por los rojos
+✅ Los "Fallos" son tu lista de problemas a resolver, empieza por los rojos
 ✅ La gráfica de tendencia muestra si estás mejorando o empeorando
-✅ Sin agente instalado no hay datos — eso lo resolvemos en el próximo post
+✅ Sin agente instalado no hay datos, eso lo resolvemos en el próximo post
 
 ---
 

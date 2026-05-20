@@ -9,7 +9,7 @@
 ## TL;DR
 
 - El Defense Score es un porcentaje: cuántos ataques simulados detectó tu seguridad
-- No existe el 100% real — el objetivo es mejorar continuamente desde donde estás
+- No existe el 100% real, el objetivo es mejorar continuamente desde donde estás
 - Un score bajo no es un fracaso: es información que antes no tenías
 - Puedes filtrar el score por máquina, tipo de ataque o período de tiempo
 - El score te da el lenguaje para hablar de seguridad con tu dirección
@@ -50,7 +50,7 @@ Tests donde nadie notó nada: 41
 Defense Score = 109 ÷ 150 × 100 = 72.7%
 ```
 
-Nota: Los tests con errores técnicos (el agente no pudo ejecutar) no cuentan — solo se miden los que llegaron a ejecutarse correctamente.
+Nota: Los tests con errores técnicos (el agente no pudo ejecutar) no cuentan, solo se miden los que llegaron a ejecutarse correctamente.
 
 ---
 
@@ -66,7 +66,7 @@ Depende del contexto, pero como orientación general:
 > 85%     Excelente. Madurez avanzada. Optimización continua.
 ```
 
-**Lo más importante no es el número de hoy — es la dirección.**
+**Lo más importante no es el número de hoy, es la dirección.**
 
 Un score de 58% que sube a 65% en un mes es mejor que un score de 80% que lleva 6 meses sin moverse.
 
@@ -249,8 +249,8 @@ no el rompecabezas completo.
 ## Puntos Clave
 
 ✅ Defense Score = % de ataques simulados que tu seguridad detectó
-✅ No existe el 100% — el objetivo es mejorar continuamente
-✅ Tu primer score bajo es normal — ahora tienes datos para actuar
+✅ No existe el 100%, el objetivo es mejorar continuamente
+✅ Tu primer score bajo es normal, ahora tienes datos para actuar
 ✅ Los filtros por máquina/tipo de ataque revelan dónde está el problema real
 ✅ La tendencia importa más que el número de hoy
 ✅ El score te da el lenguaje para justificar inversiones de seguridad a dirección

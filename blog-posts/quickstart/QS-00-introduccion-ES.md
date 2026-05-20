@@ -9,7 +9,7 @@
 ## TL;DR
 
 - Project Achilles es una plataforma open-source que mide si tu seguridad detectaría ataques reales
-- No es un SaaS — cada organización lo instala por sí misma (gratis, Apache 2.0)
+- No es un SaaS, cada organización lo instala por sí misma (gratis, Apache 2.0)
 - La página principal es informativa; los recursos importantes son los docs, GitHub y Discord
 - Este post te orienta en el ecosistema antes de instalar nada
 - Al terminar, vas directo a QS-01 para la instalación
@@ -46,13 +46,13 @@ No es una opinión. Es una medición.
 ## Qué NO Es Achilles
 
 **No es un SaaS gestionado.**
-La página `projectachilles.io` se parece a una página de producto SaaS — y esa es la intención en términos de presentación. Pero la similitud termina ahí. Achilles es open-source: cada institución u organización lo instala y opera por sí misma.
+La página `projectachilles.io` se parece a una página de producto SaaS, y esa es la intención en términos de presentación. Pero la similitud termina ahí. Achilles es open-source: cada institución u organización lo instala y opera por sí misma.
 
 **No es un antivirus ni un escáner.**
 No protege tus máquinas ni busca vulnerabilidades. Prueba si lo que ya tienes instalado realmente funciona.
 
 **No hace daño.**
-Las simulaciones son controladas. El agente no accede a tus datos, no roba credenciales, no se mueve por tu red. Es como un simulacro de incendio — real para medir la respuesta, seguro para el edificio.
+Las simulaciones son controladas. El agente no accede a tus datos, no roba credenciales, no se mueve por tu red. Es como un simulacro de incendio, real para medir la respuesta, seguro para el edificio.
 
 ---
 
@@ -122,7 +122,7 @@ El canal directo con el equipo y la comunidad. Disponible en español e inglés.
 Achilles es gratis. Instalas tú mismo y obtienes métricas continuas.
 
 **"Necesitamos evidencia real para auditorías."**
-Achilles genera registros técnicos de cada test — documentación concreta para auditores y reguladores (DORA, ISO 27001, TIBER-EU).
+Achilles genera registros técnicos de cada test, documentación concreta para auditores y reguladores (DORA, ISO 27001, TIBER-EU).
 
 **"Nuestro equipo de IT gestiona seguridad pero no son expertos en ataques."**
 No necesitas saber cómo funciona un ataque para usar Achilles. La herramienta lo hace por ti.
@@ -134,10 +134,10 @@ Achilles es el benchmarking continuo que falta en la mayoría de programas de se
 
 ## Puntos Clave
 
-✅ Achilles mide si tu seguridad actual detectaría ataques reales — con un número concreto
-✅ Es open-source (Apache 2.0) — cada organización lo instala por sí misma, sin SaaS
+✅ Achilles mide si tu seguridad actual detectaría ataques reales, con un número concreto
+✅ Es open-source (Apache 2.0), cada organización lo instala por sí misma, sin SaaS
 ✅ Las simulaciones son seguras y controladas
-✅ Recursos clave: docs, GitHub y Discord — todo desde projectachilles.io
+✅ Recursos clave: docs, GitHub y Discord, todo desde projectachilles.io
 
 ---
 

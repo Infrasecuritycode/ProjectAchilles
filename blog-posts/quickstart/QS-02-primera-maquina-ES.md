@@ -12,7 +12,7 @@
 - El proceso tiene 3 pasos: generar un token → descargar el agente → instalarlo
 - Funciona en Windows, Linux y macOS
 - Una vez instalado, la máquina aparece como "online" en el dashboard en menos de 1 minuto
-- No necesitas abrir puertos ni configurar firewalls — el agente se conecta hacia afuera (como un navegador)
+- No necesitas abrir puertos ni configurar firewalls, el agente se conecta hacia afuera (como un navegador)
 
 ---
 
@@ -48,7 +48,7 @@ eyJhY2hpbGxlcyI6InRydWUiLCJ0b2tlbklkIjoiYWJjMTIzIn0...
 → Copia este token, lo necesitas en el Paso 3
 ```
 
-**Tip:** El token expira en 24 horas. Si tardas más, solo crea uno nuevo — es instantáneo.
+**Tip:** El token expira en 24 horas. Si tardas más, solo crea uno nuevo, es instantáneo.
 
 ---
 
@@ -171,7 +171,7 @@ Una vez que viste que funciona en la primera, el proceso para las demás es idé
 3. Instala con el token
 4. Repite
 
-Para una flota grande (20+ máquinas), puedes automatizar con tu herramienta de gestión existente (SCCM, Ansible, Chef, etc.) — el comando de instalación es siempre el mismo, solo cambia el token.
+Para una flota grande (20+ máquinas), puedes automatizar con tu herramienta de gestión existente (SCCM, Ansible, Chef, etc.), el comando de instalación es siempre el mismo, solo cambia el token.
 
 ---
 
@@ -251,7 +251,7 @@ información útil — significa que tu defensa detecta binarios sin firma.
 
 ## Próximo Post
 
-**QS-03: "Ejecutar Tu Primer Test — Ver Achilles en Acción"**
+**QS-03: "Ejecutar Tu Primer Test. Ver Achilles en Acción"**
 
 Ya tienes una máquina conectada. Ahora ejecutaremos el primer test de seguridad y veremos el resultado en tiempo real.
 

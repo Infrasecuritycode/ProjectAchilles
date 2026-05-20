@@ -9,7 +9,7 @@
 ## TL;DR
 
 - Achilles tiene dos partes: la plataforma (dashboard + servidor) y el agente (en cada máquina a validar)
-- Este post cubre solo la plataforma — el agente lo instalamos en QS-03
+- Este post cubre solo la plataforma, el agente lo instalamos en QS-03
 - Dos opciones: Docker en tu máquina local (Opción A, gratis) o VPS en la nube como DigitalOcean (Opción B, ~$8/mes)
 - Al terminar tendrás el dashboard corriendo con datos de ejemplo
 - Tiempo estimado: 30 min (local) o 40 min (DigitalOcean)
@@ -95,14 +95,14 @@ Contras:
 
 **Cómo empezar:** Sigue la **Sección 1B** de este post.
 
-> **Nota:** Achilles es open-source — no existe una versión "cloud gestionada".
+> **Nota:** Achilles es open-source, no existe una versión "cloud gestionada".
 > Tú instalas, tú controlas. La nube es simplemente dónde eliges correrlo.
 
 ---
 
 ## Sección 1A: Instalar en Local (Docker en tu propia máquina)
 
-*(Si elegiste la Opción B — DigitalOcean — salta a la Sección 1B)*
+*(Si elegiste la Opción B, DigitalOcean, salta a la Sección 1B)*
 
 ### Paso 1: Descargar Achilles
 
@@ -207,7 +207,7 @@ Abre tu navegador en: **http://localhost**
 └──────────────────────────────────────────┘
 ```
 
-Crea tu primera cuenta con "Registrarse". Usa tu email — Clerk te enviará un código de verificación.
+Crea tu primera cuenta con "Registrarse". Usa tu email. Clerk te enviará un código de verificación.
 
 ### Paso 6: Conectar Elasticsearch
 
@@ -222,13 +222,13 @@ Elasticsearch URL: http://elasticsearch:9200
 [ Guardar ]
 ```
 
-Ve a **Analytics** — deberías ver el dashboard con datos de ejemplo ya cargados.
+Ve a **Analytics**, deberías ver el dashboard con datos de ejemplo ya cargados.
 
 ---
 
 ## Sección 1B: Instalar en DigitalOcean (VPS en la nube)
 
-*(Si elegiste la Opción A — Docker local — ya terminaste con la Sección 1A, salta a la Sección 2)*
+*(Si elegiste la Opción A, Docker local, ya terminaste con la Sección 1A, salta a la Sección 2)*
 
 ### Paso 1: Crear el droplet en DigitalOcean
 
@@ -296,12 +296,12 @@ services:
 EOF
 ```
 
-Docker Compose fusiona este archivo automáticamente al hacer `docker compose up` — no necesitas modificar el `docker-compose.yml` original.
+Docker Compose fusiona este archivo automáticamente al hacer `docker compose up`, no necesitas modificar el `docker-compose.yml` original.
 
 ### Paso 6: Crear tu cuenta de Clerk
 
 Sigue exactamente el **Paso 2** de la Sección 1A (más arriba).
-El proceso es idéntico — Clerk es gratis y funciona igual en local o en la nube.
+El proceso es idéntico. Clerk es gratis y funciona igual en local o en la nube.
 
 ### Paso 7: Configurar las variables de entorno
 
@@ -412,9 +412,9 @@ El agente y el primer test se cubren en **QS-02** y **QS-04**.
 ## Puntos Clave
 
 ✅ Dos opciones: local con Docker (gratis) o VPS como DigitalOcean (~$8/mes)
-✅ La plataforma incluye dashboard, backend y Elasticsearch — todo con un solo comando
+✅ La plataforma incluye dashboard, backend y Elasticsearch, todo con un solo comando
 ✅ Los datos de ejemplo se cargan automáticamente al arrancar con `--profile elasticsearch`
-✅ Al terminar este post tienes el dashboard corriendo — el agente viene en QS-02
+✅ Al terminar este post tienes el dashboard corriendo, el agente viene en QS-02
 
 ---
 

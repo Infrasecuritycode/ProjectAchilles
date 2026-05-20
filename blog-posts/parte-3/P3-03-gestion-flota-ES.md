@@ -10,7 +10,7 @@
 
 - Con 1-2 máquinas gestionas el agente manualmente. Con 10+ necesitas un flujo diferente
 - Puedes ver el estado de toda tu flota de un vistazo: quién está online, qué versión tiene, cuándo fue su último test
-- Los agentes se actualizan a distancia con un click — sin tocar cada máquina
+- Los agentes se actualizan a distancia con un click, sin tocar cada máquina
 - Las **campañas de tests** te permiten asignar tests a toda la flota o grupos de máquinas a la vez
 - Los **schedules** automatizan los tests para que corran solos cada semana sin que hagas nada
 
@@ -95,7 +95,7 @@ Endpoints → [ Actualizar todos ] → Actualizar los que tengan versión vieja
 → Sin interrumpir el servicio en los que ya están en v1.4.2
 ```
 
-El agente verifica la firma digital antes de aplicar cualquier actualización. Si la verificación falla, el agente rechaza la actualización y queda en la versión anterior — nunca aplica algo que no sea legítimo.
+El agente verifica la firma digital antes de aplicar cualquier actualización. Si la verificación falla, el agente rechaza la actualización y queda en la versión anterior, nunca aplica algo que no sea legítimo.
 
 ---
 
@@ -129,7 +129,7 @@ Horario:
 → Duración estimada: 20 minutos
 ```
 
-Al día siguiente, todos los resultados están en Analytics — una vista unificada de cómo se comportaron todas las máquinas frente a los mismos tests.
+Al día siguiente, todos los resultados están en Analytics, una vista unificada de cómo se comportaron todas las máquinas frente a los mismos tests.
 
 ---
 
@@ -166,7 +166,7 @@ Con esto, cada lunes a las 2 de la mañana Achilles:
 3. Actualiza el Defense Score
 4. Envía un resumen a Slack
 
-Tú llegas el lunes y tienes los resultados esperándote — sin haber hecho nada.
+Tú llegas el lunes y tienes los resultados esperándote, sin haber hecho nada.
 
 ### Schedules recomendados para empezar
 
@@ -241,7 +241,7 @@ Endpoints → click en la máquina → [ Revocar acceso ]
 → La máquina aparece como "Revocada" en el historial
 ```
 
-El agente sigue instalado en la máquina hasta que lo desinstales manualmente, pero no puede hacer nada — está bloqueado por el backend.
+El agente sigue instalado en la máquina hasta que lo desinstales manualmente, pero no puede hacer nada, está bloqueado por el backend.
 
 Para desinstalar completamente:
 
@@ -304,7 +304,7 @@ El token permite hasta 50 enrolamientos antes de expirar.
 ## Puntos Clave
 
 ✅ La vista de flota muestra estado, versión y último test de cada máquina
-✅ Actualizaciones remotas con un click — sin SSH ni acceso físico a las máquinas
+✅ Actualizaciones remotas con un click, sin SSH ni acceso físico a las máquinas
 ✅ Las campañas asignan tests a toda la flota o grupos en una operación
 ✅ Los schedules ejecutan tests automáticamente cada semana sin trabajo manual
 ✅ Revocar acceso invalida la API key del agente inmediatamente
@@ -319,7 +319,7 @@ Con la Parte 3 completada tienes:
 - ✅ Auto-Resolve limpiando el ruido del SOC
 - ✅ Flota de agentes gestionada a escala con schedules automáticos
 
-La **Parte 4 — Pro** cubre los flujos avanzados:
+La **Parte 4. Pro** cubre los flujos avanzados:
 - Purple Team workflow completo (de intel de amenazas a evidencia)
 - Compilar y firmar tus propios agentes
 - Evidencia para auditorías DORA, TIBER-EU e ISO 27001

@@ -9,7 +9,7 @@
 ## TL;DR
 
 - Un **bundle** es una colección de tests relacionados que se ejecutan juntos en una sola operación
-- El resultado aparece agrupado: "17/23 controles protegidos" — expandible para ver cada uno
+- El resultado aparece agrupado: "17/23 controles protegidos", expandible para ver cada uno
 - El bundle **cyber-hygiene** valida el hardening básico de Windows en 5 minutos
 - Ideal para auditorías periódicas y para responder "¿estamos bien configurados según mejores prácticas?"
 - No necesitas conocimiento técnico previo para interpretar los resultados
@@ -277,7 +277,7 @@ Esto es exactamente lo que un auditor externo quiere ver: evidencia técnica + p
 
 ## Próximo Post
 
-**P2-03: "Alerting — Que Achilles Te Avise Cuando Algo Falla"**
+**P2-03: "Alerting. Que Achilles Te Avise Cuando Algo Falla"**
 
 Cómo configurar notificaciones de Slack o email para no tener que revisar el dashboard manualmente.
 

@@ -192,7 +192,7 @@ Fuente: TIBER-EU threat intelligence
 → Framework europeo de pruebas de resiliencia para banca
 ```
 
-Esto significa que cuando ejecutas un test de Achilles, estás probando contra técnicas que se usan en ataques reales hoy — no escenarios hipotéticos.
+Esto significa que cuando ejecutas un test de Achilles, estás probando contra técnicas que se usan en ataques reales hoy, no escenarios hipotéticos.
 
 ---
 
@@ -266,11 +266,11 @@ Buscar: "LSASS"        → Tests específicos de LSASS
 
 ## Puntos Clave
 
-✅ 500+ tests organizados por fase del ataque — todos basados en técnicas documentadas reales
+✅ 500+ tests organizados por fase del ataque, todos basados en técnicas documentadas reales
 ✅ Filtros por fase, plataforma, severidad y tipo para encontrar lo que importa
 ✅ Cada test tiene ficha explicativa: qué es, qué simula, qué debería detectarlo
 ✅ Los tests vienen de advisories CISA, campañas APT documentadas y frameworks como TIBER
-✅ La librería se actualiza automáticamente — siempre tienes los tests de las amenazas actuales
+✅ La librería se actualiza automáticamente, siempre tienes los tests de las amenazas actuales
 ✅ Empieza con bundles, luego técnicas CRÍTICAS, luego explora por tu sector
 
 ---

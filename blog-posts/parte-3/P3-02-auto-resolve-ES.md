@@ -8,10 +8,10 @@
 
 ## TL;DR
 
-- Cuando Achilles ejecuta tests, Defender genera alertas reales — eso confirma que detecta el ataque
+- Cuando Achilles ejecuta tests, Defender genera alertas reales, eso confirma que detecta el ataque
 - El problema: esas alertas llenan el queue de tu equipo con "falsos positivos" de pruebas
 - **Auto-Resolve** las cierra automáticamente en Defender marcándolas como "security testing"
-- Tiene tres modos: desactivado → prueba → activo — siempre empieza en modo prueba
+- Tiene tres modos: desactivado → prueba → activo, siempre empieza en modo prueba
 - Requiere un permiso adicional en Azure y tener la integración con Defender activa (P3-01)
 
 ---
@@ -36,7 +36,7 @@ Analista revisa la segunda:
 40 minutos después: revisó 4 alertas, todas de tests
 ```
 
-El equipo empieza a quejarse del ruido. La tentación es ejecutar menos tests — y eso es exactamente lo contrario de lo que necesitas.
+El equipo empieza a quejarse del ruido. La tentación es ejecutar menos tests, y eso es exactamente lo contrario de lo que necesitas.
 
 **Auto-Resolve resuelve ese problema** cerrando automáticamente las alertas que Achilles sabe que generó él mismo.
 
@@ -86,7 +86,7 @@ Azure Portal → Microsoft Entra ID → App registrations
 → Grant admin consent ✅
 ```
 
-Si no puedes o no quieres dar permiso de escritura, Auto-Resolve tiene un **modo prueba** que simula las resoluciones sin ejecutarlas — puedes auditar el comportamiento antes de decidir.
+Si no puedes o no quieres dar permiso de escritura, Auto-Resolve tiene un **modo prueba** que simula las resoluciones sin ejecutarlas, puedes auditar el comportamiento antes de decidir.
 
 ---
 
@@ -176,7 +176,7 @@ c9012-xxx           T1078.002-accounts SRV01         02:08 ✅
 d3456-xxx           T1021.001-rdp      SRV02         Excluida ⚠️
 ```
 
-La última fila (excluida) significa que Achilles no tuvo suficiente confianza en la correlación y decidió no cerrarla — el analista la revisará manualmente.
+La última fila (excluida) significa que Achilles no tuvo suficiente confianza en la correlación y decidió no cerrarla, el analista la revisará manualmente.
 
 ---
 
@@ -250,17 +250,17 @@ Para organizaciones bajo DORA o ISO 27001: el historial de Auto-Resolve es evide
 ## Puntos Clave
 
 ✅ Auto-Resolve cierra en Defender las alertas generadas por tests de Achilles
-✅ Siempre empieza en modo prueba — audita 24-48h antes de activar
+✅ Siempre empieza en modo prueba, audita 24-48h antes de activar
 ✅ Requiere permiso adicional en Azure: `SecurityAlert.ReadWrite.All`
-✅ Solo cierra alertas con alta confianza de correlación — nunca amenazas reales
-✅ Defense Score y resultados de tests son inmutables — Auto-Resolve no los toca
+✅ Solo cierra alertas con alta confianza de correlación, nunca amenazas reales
+✅ Defense Score y resultados de tests son inmutables. Auto-Resolve no los toca
 ✅ Historial completo de cierres para auditorías
 
 ---
 
 ## Próximo Post
 
-**P3-03: "Gestión de Flota — Administrar Muchos Agentes a la Vez"**
+**P3-03: "Gestión de Flota. Administrar Muchos Agentes a la Vez"**
 
 Cuando tienes más de 5-10 máquinas con el agente, la gestión cambia. Cómo organizar tu flota, actualizar agentes remotamente y programar campañas de tests a escala.
 

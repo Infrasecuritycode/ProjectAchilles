@@ -12,7 +12,7 @@
 - El **Treemap** te muestra lo mismo pero priorizando visualmente lo más crítico (más grande = más urgente)
 - Ambas visualizaciones están en Analytics y se actualizan con cada test ejecutado
 - Son la mejor herramienta para comunicar gaps a dirección o a un auditor con una sola imagen
-- No necesitas saber qué es MITRE ATT&CK para leerlos — este post te lo explica
+- No necesitas saber qué es MITRE ATT&CK para leerlos, este post te lo explica
 
 ---
 
@@ -20,7 +20,7 @@
 
 Antes de ver el heatmap, necesitas entender qué estás mirando.
 
-**MITRE ATT&CK** es básicamente un catálogo — una lista organizada de todas las técnicas que los hackers reales usan para atacar organizaciones. Lo mantiene una organización sin ánimo de lucro llamada MITRE, con información real de incidentes documentados en todo el mundo.
+**MITRE ATT&CK** es básicamente un catálogo, una lista organizada de todas las técnicas que los hackers reales usan para atacar organizaciones. Lo mantiene una organización sin ánimo de lucro llamada MITRE, con información real de incidentes documentados en todo el mundo.
 
 El catálogo organiza las técnicas en fases del ataque:
 
@@ -82,7 +82,7 @@ Los botones encima del heatmap te dejan cambiar la vista:
 [ Todos ] [ Solo protegidos ] [ Solo gaps ] [ Solo parciales ]
 ```
 
-**El más útil:** "Solo gaps" — muestra únicamente dónde fallas. Ideal para una reunión de seguridad o para presentar al CISO.
+**El más útil:** "Solo gaps", muestra únicamente dónde fallas. Ideal para una reunión de seguridad o para presentar al CISO.
 
 ---
 
@@ -112,7 +112,7 @@ El treemap es el mismo dato pero en otro formato:
 
 **La lectura es instantánea:** el rectángulo rojo más grande es tu prioridad #1.
 
-En el ejemplo de arriba: Defense Evasion es el área más crítica con menor cobertura — ahí es donde enfocar el trabajo.
+En el ejemplo de arriba: Defense Evasion es el área más crítica con menor cobertura, ahí es donde enfocar el trabajo.
 
 ---
 
@@ -165,7 +165,7 @@ Muchas celdas vacías en "Defense Evasion"
 → Ver cuántos rojos aparecen en el heatmap
 ```
 
-Las celdas vacías no son "verde" — son desconocido. El objetivo es convertir desconocidos en verde (o al menos saber que son rojos y actuar).
+Las celdas vacías no son "verde", son desconocido. El objetivo es convertir desconocidos en verde (o al menos saber que son rojos y actuar).
 
 ---
 
@@ -207,7 +207,7 @@ SERVER-ARCHIVOS  ████████████          51%  🔴  ← Pr
 
 ✅ El Heatmap muestra tu cobertura sobre el mapa de técnicas de ataque reales
 ✅ El Treemap prioriza visualmente: el cuadro rojo más grande = prioridad #1
-✅ Celdas vacías = desconocido, no verde — hay que probar esas técnicas
+✅ Celdas vacías = desconocido, no verde, hay que probar esas técnicas
 ✅ El gráfico por severidad te dice cuán críticos son tus gaps
 ✅ Defense Score por máquina identifica los endpoints con peor cobertura
 ✅ Una imagen del treemap comunica la situación de seguridad mejor que cualquier tabla
@@ -216,7 +216,7 @@ SERVER-ARCHIVOS  ████████████          51%  🔴  ← Pr
 
 ## Próximo Post
 
-**P2-02: "Bundle Tests — Auditar 30 Controles de Seguridad en 5 Minutos"**
+**P2-02: "Bundle Tests. Auditar 30 Controles de Seguridad en 5 Minutos"**
 
 Cómo usar los bundles de Achilles para hacer auditorías completas de hardening sin trabajo manual.
 

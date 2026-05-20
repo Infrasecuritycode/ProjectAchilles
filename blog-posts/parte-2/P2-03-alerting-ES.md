@@ -11,7 +11,7 @@
 - Achilles puede enviarte alertas a **Slack** o **email** cuando el Defense Score cae o se detecta un gap crítico
 - Se configura en menos de 10 minutos
 - Puedes establecer dos umbrales: caída porcentual (ej: "avísame si cae más del 5%") y suelo mínimo (ej: "avísame si baja de 60%")
-- Las alertas llegan en tiempo real — en segundos después de detectar el cambio
+- Las alertas llegan en tiempo real, en segundos después de detectar el cambio
 - Con alertas configuradas no necesitas revisar el dashboard todos los días
 
 ---
@@ -254,7 +254,7 @@ Nota:    "Actualización de políticas de grupo y EDR"
 
 ## Próximo Post
 
-**P2-04: "La Librería Completa — Navegar 500+ Técnicas de Ataque"**
+**P2-04: "La Librería Completa. Navegar 500+ Técnicas de Ataque"**
 
 Cómo explorar el catálogo de tests de Achilles, qué es MITRE ATT&CK en detalle, y cómo elegir qué probar en tu organización.
 

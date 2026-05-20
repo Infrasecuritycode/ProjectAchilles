@@ -8,11 +8,11 @@
 
 ## TL;DR
 
-- Los reguladores no piden una promesa de seguridad — piden evidencia de que la has medido y mejorado
+- Los reguladores no piden una promesa de seguridad, piden evidencia de que la has medido y mejorado
 - Achilles genera exactamente el tipo de evidencia que piden DORA, TIBER-EU e ISO 27001: tests ejecutados, resultados, fechas, mejoras
-- DORA exige TLPT (Threat-Led Penetration Testing) cada 3 años para entidades significativas — Achilles es la capa de validación continua entre ejercicios
-- TIBER-EU usa el mismo modelo con el regulador como árbitro — los datos de Achilles son la línea base y el cierre
-- ISO 27001 Anexo A tiene controles técnicos que se demuestran con tests de detección — Achilles los mapea directamente
+- DORA exige TLPT (Threat-Led Penetration Testing) cada 3 años para entidades significativas. Achilles es la capa de validación continua entre ejercicios
+- TIBER-EU usa el mismo modelo con el regulador como árbitro, los datos de Achilles son la línea base y el cierre
+- ISO 27001 Anexo A tiene controles técnicos que se demuestran con tests de detección. Achilles los mapea directamente
 
 ---
 
@@ -313,11 +313,11 @@ La diferencia entre "cumplir el mínimo" y "estar bien protegido" es exactamente
 
 ## Puntos Clave
 
-✅ DORA exige TLPT cada 3 años + validación continua — Achilles cubre la parte continua
+✅ DORA exige TLPT cada 3 años + validación continua. Achilles cubre la parte continua
 ✅ TIBER-EU: Achilles establece la línea base antes del ejercicio y la evidencia de cierre después
 ✅ ISO 27001 Anexo A: los controls 8.8, 8.20 y 8.29 se demuestran directamente con los exports de Achilles
 ✅ El paquete de evidencia tiene 6 secciones: resumen, actividad, score, gaps/remediación, correlación, proceso
-✅ Los exports CSV/JSON de Analytics son la evidencia — fechados, completos, exportables
+✅ Los exports CSV/JSON de Analytics son la evidencia, fechados, completos, exportables
 ✅ La diferencia entre cumplir el mínimo y estar protegido es la frecuencia: semanal, no anual
 
 ---
@@ -355,6 +355,6 @@ Parte 4 — Pro:
 
 ---
 
-*Parte 3 de 3 en la serie "Pro — Flujos Avanzados con Achilles".*
+*Parte 3 de 3 en la serie "Pro. Flujos Avanzados con Achilles".*
 
 **Autor:** Kendra Mazara | **Fecha:** Mayo 2026
