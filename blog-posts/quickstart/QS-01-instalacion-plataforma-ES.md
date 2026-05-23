@@ -137,9 +137,6 @@ Achilles usa Clerk para el login de usuarios. Necesitas crear una app gratuita:
    → Secret key:      sk_test_xxxxxxxxxx...
 ```
 
-![Clerk — Sign in options](images/QS-01/clerk-sign-in-options.png)
-![Clerk — API Keys](images/QS-01/clerk-api-keys.png)
-
 ### Paso 3: Configurar las variables de entorno
 
 El repo incluye dos archivos de ejemplo (`.env.example`) que sirven como plantilla. El comando `cp` los copia con el nombre `.env`, que es el archivo real que Achilles lee al arrancar. Necesitas crear uno para cada parte:
@@ -204,12 +201,14 @@ Verás la landing page de Achilles. Click en **SIGN IN** (arriba a la derecha o 
 
 ![Achilles — landing page](images/QS-01/achilles-landing.png)
 
-Verás el modal de login de Clerk. Como es la primera vez, click en **Sign up** (abajo del todo). Tienes dos opciones:
+Verás el modal de login de Clerk. Tienes dos opciones:
 
-- **Con Google**: click en "Continue with Google" — Clerk maneja el OAuth automáticamente, sin email ni contraseña. Este botón solo aparece si dejaste Google habilitado en el Paso 2.
-- **Con email**: rellena tu email y una contraseña, click **Continue** — Clerk te enviará un código de verificación para confirmar la cuenta.
+- **Con Google**: click en "Continue with Google" — Clerk maneja el OAuth automáticamente. Este botón aparece si dejaste Google habilitado en el Paso 2.
+- **Con email**: escribe tu email, click **Continue** — Clerk te enviará un código de verificación para confirmar la cuenta.
 
-![Clerk — Sign up](images/QS-01/clerk-signup.png)
+Si es la primera vez, click en **Sign up** (abajo del todo) para crear tu cuenta.
+
+![Clerk — Sign in](images/QS-01/clerk-signup.png)
 
 ### Paso 6: Verificar Elasticsearch
 
