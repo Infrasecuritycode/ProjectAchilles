@@ -161,14 +161,10 @@ Abre `backend/.env` con `nano backend/.env` y cambia solo estos tres valores:
 # ── Clerk (obligatorio) ───────────────────────────
 CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxx
 CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxx
-
-# ── CORS (cambia de :5173 a solo localhost) ───────
-CORS_ORIGIN=http://localhost
 ```
 
-> **`ENCRYPTION_SECRET` y `AGENT_SERVER_URL`** — déjalos como están por ahora.
-> `ENCRYPTION_SECRET` es opcional en local. `AGENT_SERVER_URL` lo ajustamos
-> cuando instalemos el agente en QS-02.
+> **`CORS_ORIGIN`** — no necesitas cambiarlo si usas Docker. Nginx sirve el frontend en el puerto 80 y hace de proxy hacia el backend internamente, el navegador nunca llama directamente al puerto 3000 y CORS no se dispara. Solo importa si corres Achilles fuera de Docker (modo desarrollo).
+> **`ENCRYPTION_SECRET` y `AGENT_SERVER_URL`** — déjalos como están. `AGENT_SERVER_URL` lo ajustamos en QS-02 cuando instalemos el agente.
 
 Crea el archivo `.env` en la raíz del proyecto (Docker Compose lo lee para pasar variables al contenedor del frontend):
 
