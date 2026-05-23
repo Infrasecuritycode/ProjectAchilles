@@ -73,7 +73,10 @@ docker compose version
 
 Si no tienes Docker:
 - Windows/Mac: descarga **Docker Desktop** desde https://docker.com/products/docker-desktop
-- Linux: sigue la guía oficial de tu distribución (Ubuntu: `apt install docker.io`)
+- Linux: usa el script oficial de Docker (instala la versión más reciente):
+  ```bash
+  curl -fsSL https://get.docker.com | sh
+  ```
 
 ---
 
@@ -108,7 +111,7 @@ Contras:
 
 ```bash
 git clone https://github.com/projectachilles/ProjectAchilles
-cd achilles
+cd ProjectAchilles
 ```
 
 Si no tienes git: descarga el ZIP desde GitHub → "Code" → "Download ZIP", extrae y entra a la carpeta.
@@ -122,41 +125,50 @@ Achilles usa Clerk para el login de usuarios. Necesitas crear una app gratuita:
 2. Crea una cuenta (es gratis)
 3. Crea una nueva aplicación:
    Nombre: "Achilles"
-   Método de login: Email + Password
-4. En el dashboard de Clerk → "API Keys"
-5. Copia estos dos valores:
+   Sign in options: deja Email activado (los demás son opcionales)
+   → Google activado también funciona, añade el botón
+     "Continuar con Google" al login
+   → Password no aparece aquí, se activa después en el
+     dashboard si lo necesitas (email code funciona igual)
+4. Click "Create application"
+5. En el dashboard de Clerk → Configure → API Keys
+6. Copia estos dos valores:
    → Publishable key: pk_test_xxxxxxxxxx...
    → Secret key:      sk_test_xxxxxxxxxx...
 ```
 
+![Clerk — Sign in options](images/QS-01/clerk-sign-in-options.png)
+![Clerk — API Keys](images/QS-01/clerk-api-keys.png)
+
 ### Paso 3: Configurar las variables de entorno
 
+El repo incluye dos archivos de ejemplo (`.env.example`) que sirven como plantilla. El comando `cp` los copia con el nombre `.env`, que es el archivo real que Achilles lee al arrancar. Necesitas crear uno para cada parte:
+
 ```bash
-# Copia el archivo de ejemplo
+# Para el servidor (backend) — aquí van las Clerk keys, CORS, etc.
 cp backend/.env.example backend/.env
+
+# Para el frontend — Docker Compose lo lee al construir el contenedor
+cp .env.example .env
 ```
 
-Abre `backend/.env` con cualquier editor de texto y rellena:
+> Los archivos `.env.example` nunca se modifican — son la plantilla guardada en el repo.
+> Los `.env` son tu copia local con tus valores reales, y están en `.gitignore` para que no se suban a GitHub.
+
+Abre `backend/.env` con `nano backend/.env` y cambia solo estos tres valores:
 
 ```bash
-# ── Clerk ────────────────────────────────────────
+# ── Clerk (obligatorio) ───────────────────────────
 CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxx
 CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxx
 
-# ── Seguridad (genera una clave aleatoria) ────────
-# En Mac/Linux ejecuta: openssl rand -hex 32
-# En Windows PowerShell: [System.Web.Security.Membership]::GeneratePassword(64,0)
-ENCRYPTION_SECRET=pon-aqui-una-clave-de-64-caracteres-aleatoria
-
-# ── URL de tu servidor ────────────────────────────
-# Si el agente corre en la misma red: usa la IP local
-# Si el agente corre fuera: usa tu IP pública o dominio
-AGENT_SERVER_URL=http://192.168.1.100:3000
-
-# ── CORS ─────────────────────────────────────────
-# Docker sirve el frontend en el puerto 80 (http://localhost)
+# ── CORS (cambia de :5173 a solo localhost) ───────
 CORS_ORIGIN=http://localhost
 ```
+
+> **`ENCRYPTION_SECRET` y `AGENT_SERVER_URL`** — déjalos como están por ahora.
+> `ENCRYPTION_SECRET` es opcional en local. `AGENT_SERVER_URL` lo ajustamos
+> cuando instalemos el agente en QS-02.
 
 Crea el archivo `.env` en la raíz del proyecto (Docker Compose lo lee para pasar variables al contenedor del frontend):
 
@@ -165,21 +177,23 @@ Crea el archivo `.env` en la raíz del proyecto (Docker Compose lo lee para pasa
 cp .env.example .env
 ```
 
-Abre `.env` y añade tu Clerk publishable key:
+Abre `.env` con `nano .env` y añade tu Clerk publishable key al principio del archivo — el `.env.example` raíz no trae este campo, hay que añadirlo manualmente:
 
 ```bash
+# ============ Clerk (Frontend) ============
 CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxx
 ```
 
 > **¿Por qué dos archivos?**
-> `backend/.env` lo inyecta el backend directamente. El contenedor del frontend recibe su configuración del `.env` raíz, que Docker Compose interpola al arrancar.
+> `backend/.env` lo lee el servidor directamente. El `.env` raíz lo lee Docker Compose al arrancar y se lo pasa al contenedor del frontend. Son dos rutas de configuración distintas.
 
 ### Paso 4: Arrancar todo
 
 ```bash
-# Stack completo con Elasticsearch y datos de ejemplo
 docker compose --profile elasticsearch up -d
 ```
+
+> **¿Por qué `--profile elasticsearch`?** Achilles guarda los resultados de los tests en Elasticsearch — el módulo de Analytics lo usa para calcular el Defense Score, el heatmap de MITRE ATT&CK y las tendencias. Sin ese flag solo arrancan el backend y el frontend, pero Analytics no tiene datos. El perfil también carga 1,000 resultados de ejemplo automáticamente.
 
 Espera 1-2 minutos mientras los contenedores arrancan. Verifica que todo está corriendo:
 
@@ -192,37 +206,37 @@ docker compose ps
 # elasticsearch       Up   0.0.0.0:9200->9200/tcp
 ```
 
+
 ### Paso 5: Abrir el dashboard
 
 Abre tu navegador en: **http://localhost**
 
+Verás la landing page de Achilles. Click en **SIGN IN** (arriba a la derecha o en el centro de la página).
+
+![Achilles — landing page](images/QS-01/achilles-landing.png)
+
+Verás el modal de login de Clerk. Como es la primera vez, click en **Sign up** (abajo del todo). Tienes dos opciones:
+
+- **Con Google**: click en "Continue with Google" — Clerk maneja el OAuth automáticamente, sin email ni contraseña. Este botón solo aparece si dejaste Google habilitado en el Paso 2.
+- **Con email**: rellena tu email y una contraseña, click **Continue** — Clerk te enviará un código de verificación para confirmar la cuenta.
+
+![Clerk — Sign up](images/QS-01/clerk-signup.png)
+
+### Paso 6: Verificar Elasticsearch
+
+Ve a **Settings → Integrations**. Deberías ver Analytics (Elasticsearch) en estado **Connected** — Docker conecta Elasticsearch automáticamente al arrancar, no necesitas configurar nada.
+
+![Settings — Integrations](images/QS-01/settings-integrations.png)
+
+Si por alguna razón aparece "Not configured", expande la tarjeta y pon:
 ```
-┌──────────────────────────────────────────┐
-│           PROJECT ACHILLES               │
-│                                          │
-│  Email:      [____________________]      │
-│  Contraseña: [____________________]      │
-│                                          │
-│  [ Iniciar sesión ]  [ Registrarse ]     │
-└──────────────────────────────────────────┘
-```
-
-Crea tu primera cuenta con "Registrarse". Usa tu email. Clerk te enviará un código de verificación.
-
-### Paso 6: Conectar Elasticsearch
-
-```
-Settings → Integrations → Analytics
-
 Elasticsearch URL: http://elasticsearch:9200
-(dentro de Docker, usa este hostname)
-
-[ Test Connection ] → ✅ Connected · 1,000 documents
-
-[ Guardar ]
 ```
+Guarda y debería conectar de inmediato.
 
-Ve a **Analytics**, deberías ver el dashboard con datos de ejemplo ya cargados.
+Ahora ve a **Analytics → Dashboard**. Verás el dashboard con los datos de ejemplo ya cargados: Defense Score, Trend Overview, Score by Category y Test Activity.
+
+![Analytics — Dashboard](images/QS-01/analytics-dashboard.png)
 
 ---
 
@@ -277,7 +291,7 @@ apt install -y git
 
 ```bash
 git clone https://github.com/projectachilles/ProjectAchilles
-cd achilles
+cd ProjectAchilles
 ```
 
 ### Paso 5: Exponer los puertos al exterior
@@ -298,10 +312,24 @@ EOF
 
 Docker Compose fusiona este archivo automáticamente al hacer `docker compose up`, no necesitas modificar el `docker-compose.yml` original.
 
-### Paso 6: Crear tu cuenta de Clerk
+### Paso 6: Crear tu cuenta de Clerk (autenticación gratuita)
 
-Sigue exactamente el **Paso 2** de la Sección 1A (más arriba).
-El proceso es idéntico. Clerk es gratis y funciona igual en local o en la nube.
+```
+1. Ve a https://clerk.com → "Start building for free"
+2. Crea una cuenta (es gratis)
+3. Crea una nueva aplicación:
+   Nombre: "Achilles"
+   Sign in options: deja Email activado (los demás son opcionales)
+   → Google activado también funciona, añade el botón
+     "Continuar con Google" al login
+   → Password no aparece aquí, se activa después en el
+     dashboard si lo necesitas (email code funciona igual)
+4. Click "Create application"
+5. En el dashboard de Clerk → Configure → API Keys
+6. Copia estos dos valores:
+   → Publishable key: pk_test_xxxxxxxxxx...
+   → Secret key:      sk_test_xxxxxxxxxx...
+```
 
 ### Paso 7: Configurar las variables de entorno
 
@@ -383,7 +411,33 @@ docker compose ps
 
 Desde tu navegador (en cualquier computadora): **http://167.99.123.45**
 
-Crea tu cuenta con "Registrarse" y sigue el **Paso 6** de la Sección 1A para conectar Elasticsearch.
+```
+┌──────────────────────────────────────────┐
+│           PROJECT ACHILLES               │
+│                                          │
+│  Email:      [____________________]      │
+│  Contraseña: [____________________]      │
+│                                          │
+│  [ Iniciar sesión ]  [ Registrarse ]     │
+└──────────────────────────────────────────┘
+```
+
+Crea tu primera cuenta con "Registrarse". Usa tu email. Clerk te enviará un código de verificación.
+
+### Paso 11: Conectar Elasticsearch
+
+```
+Settings → Integrations → Analytics
+
+Elasticsearch URL: http://elasticsearch:9200
+(dentro de Docker, usa este hostname)
+
+[ Test Connection ] → ✅ Connected · 1,000 documents
+
+[ Guardar ]
+```
+
+Ve a **Analytics**, deberías ver el dashboard con datos de ejemplo ya cargados.
 
 
 ---
@@ -398,11 +452,16 @@ OPCIÓN A — Local (gratis):
   Total: ~20 minutos
 
 OPCIÓN B — DigitalOcean (~$8/mes):
-  1. Crear droplet Ubuntu + instalar Docker   (10 min)
-  2. Clonar repo + configurar .env            (10 min)
-  3. Exponer puertos + docker compose up      (5 min)
-  4. Crear cuenta + conectar Elasticsearch    (5 min)
-  Total: ~30 minutos
+  1. Crear droplet Ubuntu                     (5 min)
+  2. Instalar Docker y Git                    (5 min)
+  3. Clonar repo                              (2 min)
+  4. Exponer puertos                          (2 min)
+  5. Crear cuenta de Clerk                    (5 min)
+  6. Configurar .env con IP pública           (5 min)
+  7. Abrir puertos en el firewall             (3 min)
+  8. docker compose up                        (3 min)
+  9. Crear cuenta + conectar Elasticsearch    (5 min)
+  Total: ~35 minutos
 ```
 
 El agente y el primer test se cubren en **QS-02** y **QS-04**.
