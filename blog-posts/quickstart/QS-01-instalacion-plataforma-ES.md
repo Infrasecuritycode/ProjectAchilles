@@ -315,62 +315,66 @@ Docker Compose fusiona este archivo automáticamente al hacer `docker compose up
 
 ### Paso 6: Crear tu cuenta de Clerk (autenticación gratuita)
 
-```
-1. Ve a https://clerk.com → "Start building for free"
-2. Crea una cuenta (es gratis)
-3. Crea una nueva aplicación:
-   Nombre: "Achilles"
-   Sign in options: deja Email activado (los demás son opcionales)
-   → Google activado también funciona, añade el botón
-     "Continuar con Google" al login
-   → Password no aparece aquí, se activa después en el
-     dashboard si lo necesitas (email code funciona igual)
-4. Click "Create application"
-5. En el dashboard de Clerk → Configure → API Keys
-6. Copia estos dos valores:
-   → Publishable key: pk_test_xxxxxxxxxx...
-   → Secret key:      sk_test_xxxxxxxxxx...
-```
+Achilles usa Clerk para el login de usuarios. Es gratuito y no requiere tarjeta de crédito.
+
+1. Ve a https://clerk.com → **"Start building for free"** y crea una cuenta
+2. Crea una nueva aplicación:
+   - **Nombre**: `Achilles`
+   - **Sign in options**: deja **Email** activado — es suficiente para empezar
+   - Si activas **Google**, aparecerá el botón "Continue with Google" en el login (opcional)
+3. Click **"Create application"**
+4. Ve a **Configure → API Keys** y copia estos dos valores:
+   - **Publishable key**: empieza con `pk_test_...` — va en el frontend y el backend
+   - **Secret key**: empieza con `sk_test_...` — solo va en el backend, nunca lo expongas
 
 ### Paso 7: Configurar las variables de entorno
 
+El repo ya incluye un `.env.example` con todas las variables. Ya fue copiado automáticamente a `.env` — solo tienes que editar los valores.
+
+Primero genera los secrets de seguridad (corre cada comando por separado y guarda los resultados):
+
 ```bash
-cp backend/.env.example backend/.env
-nano backend/.env   # o usa: vi backend/.env
+openssl rand -base64 32   # para SESSION_SECRET
+openssl rand -base64 32   # para ENCRYPTION_SECRET
 ```
 
-Rellena con tu IP pública del droplet (ej. `<IP-pública>`):
+Luego abre el `.env` del backend (estando dentro de `~/ProjectAchilles/backend`):
 
 ```bash
-# ── Clerk ────────────────────────────────────────
-CLERK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxx
-CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxx
-
-# ── Seguridad ─────────────────────────────────────
-# Genera la clave con: openssl rand -hex 32
-ENCRYPTION_SECRET=pon-aqui-una-clave-de-64-caracteres-aleatoria
-
-# ── URL pública del servidor ──────────────────────
-# Los agentes usarán esta URL para conectarse
-AGENT_SERVER_URL=http://<IP-pública>:3000
-
-# ── CORS ─────────────────────────────────────────
-# Usa la IP pública, no localhost
-CORS_ORIGIN=http://<IP-pública>
+nano .env
 ```
 
-Crea el `.env` raíz:
+Usa **Ctrl+W** para buscar cada campo. Edita solo estos 6 valores:
+
+| Variable | Valor |
+|----------|-------|
+| `CLERK_PUBLISHABLE_KEY` | tu `pk_test_...` de Clerk |
+| `CLERK_SECRET_KEY` | tu `sk_test_...` de Clerk |
+| `SESSION_SECRET` | resultado del primer `openssl rand` |
+| `ENCRYPTION_SECRET` | resultado del segundo `openssl rand` (descomenta la línea quitando el `#`) |
+| `CORS_ORIGIN` | `http://<IP-pública>` — permite al frontend hablar con el backend desde fuera |
+| `AGENT_SERVER_URL` | `http://<IP-pública>:3000` — URL que usarán los agentes para conectarse |
+
+> **¿Por qué `CORS_ORIGIN` y `AGENT_SERVER_URL` con la IP pública?**
+> En local todo corre en la misma máquina y el navegador accede por `localhost`. En DigitalOcean accedes desde otra máquina — el backend necesita saber qué origen permitir (CORS) y los agentes necesitan saber a qué URL conectarse.
+
+Guarda con **Ctrl+X → Y → Enter**.
+
+Crea el `.env` raíz (para el frontend — estando en `~/ProjectAchilles`):
 
 ```bash
+cd ..
 cp .env.example .env
 nano .env
 ```
 
-Añade tu Clerk publishable key:
+Busca `CLERK_PUBLISHABLE_KEY` y ponle tu `pk_test_...`:
 
 ```bash
 CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxx
 ```
+
+Guarda con **Ctrl+X → Y → Enter**.
 
 ### Paso 8: Abrir los puertos en el firewall de DigitalOcean
 
