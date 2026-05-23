@@ -236,19 +236,30 @@ Ahora ve a **Analytics → Dashboard**. Verás el dashboard con los datos de eje
 
 ### Paso 1: Crear el droplet en DigitalOcean
 
-```
 1. Ve a https://digitalocean.com → "Sign Up" (o inicia sesión)
-2. Click "Create" → "Droplets"
+2. Click **"Create" → "Droplets"**
 3. Elige la configuración:
-   Región:    La más cercana a tus máquinas (ej. NYC, AMS, FRA)
-   Imagen:    Ubuntu 22.04 LTS x64
-   Plan:      Basic → Premium Intel → $8/mes (1 vCPU, 1 GB RAM, 35 GB NVMe SSD)
-   Autenticación: SSH key (recomendado) o Password
-4. Nombre del droplet: "achilles-server"
-5. Click "Create Droplet"
-6. Espera ~1 minuto — DigitalOcean te mostrará la IP pública
-   Ejemplo: 167.99.123.45
-```
+   - **Región**: la más cercana a tus máquinas (ej. NYC, AMS, FRA)
+   - **Imagen**: Ubuntu 22.04 LTS x64
+   - **Plan**: Basic → Premium Intel → **$8/mes** (1 vCPU, 1 GB RAM, 35 GB NVMe SSD)
+
+4. **Autenticación con SSH key** (recomendado):
+
+   En tu terminal local genera una clave si no tienes una:
+   ```bash
+   ssh-keygen -t ed25519
+   # Presiona Enter en todo para aceptar los defaults
+   ```
+   Luego copia tu clave pública:
+   ```bash
+   cat ~/.ssh/id_ed25519.pub
+   ```
+   En DigitalOcean click **"Add SSH Key"**, pega el contenido, ponle un nombre (ej. `mi-laptop`) y click **"Add SSH Key"**. Marca el checkbox de la clave para seleccionarla.
+
+   > Si prefieres no usar SSH, selecciona la pestaña **Password** y pon una contraseña segura.
+
+5. Dale un nombre al droplet (ej. `achilles-server`) y click **"Create Droplet"**
+6. Espera ~1 minuto — DigitalOcean te mostrará la IP pública del servidor (ej. `167.99.123.45`)
 
 ### Paso 2: Conectarte al servidor
 
