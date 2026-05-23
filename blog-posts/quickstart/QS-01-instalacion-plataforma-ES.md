@@ -241,7 +241,7 @@ Ahora ve a **Analytics → Dashboard**. Verás el dashboard con los datos de eje
 2. Click "Create" → "Droplets"
 3. Elige la configuración:
    Imagen:    Ubuntu 22.04 LTS x64
-   Plan:      Basic → Regular → $8/mes (1 vCPU, 2 GB RAM, 50 GB disco)
+   Plan:      Basic → Premium Intel → $8/mes (1 vCPU, 1 GB RAM, 35 GB NVMe SSD)
    Región:    La más cercana a tus máquinas (ej. NYC, AMS, FRA)
    Autenticación: SSH key (recomendado) o Password
 4. Nombre del droplet: "achilles-server"
