@@ -259,16 +259,16 @@ Ahora ve a **Analytics → Dashboard**. Verás el dashboard con los datos de eje
    > Si prefieres no usar SSH, selecciona la pestaña **Password** y pon una contraseña segura.
 
 5. Dale un nombre al droplet (ej. `achilles-server`) y click **"Create Droplet"**
-6. Espera ~1 minuto — DigitalOcean te mostrará la IP pública del servidor (ej. `167.99.123.45`)
+6. Espera ~1 minuto — DigitalOcean te mostrará la IP pública del servidor (ej. `<IP-pública>`)
 
 ### Paso 2: Conectarte al servidor
 
 ```bash
-# Desde tu terminal local (Mac/Linux)
-ssh root@167.99.123.45
+# Desde tu terminal local (Mac/Linux) — usa tu IP pública
+ssh root@<IP-pública>
 
 # Windows: usa PuTTY o Windows Terminal con:
-# ssh root@167.99.123.45
+# ssh root@<IP-pública>
 ```
 
 ### Paso 3: Instalar Docker y Git
@@ -339,7 +339,7 @@ cp backend/.env.example backend/.env
 nano backend/.env   # o usa: vi backend/.env
 ```
 
-Rellena con tu IP pública del droplet (ej. `167.99.123.45`):
+Rellena con tu IP pública del droplet (ej. `<IP-pública>`):
 
 ```bash
 # ── Clerk ────────────────────────────────────────
@@ -352,11 +352,11 @@ ENCRYPTION_SECRET=pon-aqui-una-clave-de-64-caracteres-aleatoria
 
 # ── URL pública del servidor ──────────────────────
 # Los agentes usarán esta URL para conectarse
-AGENT_SERVER_URL=http://167.99.123.45:3000
+AGENT_SERVER_URL=http://<IP-pública>:3000
 
 # ── CORS ─────────────────────────────────────────
 # Usa la IP pública, no localhost
-CORS_ORIGIN=http://167.99.123.45
+CORS_ORIGIN=http://<IP-pública>
 ```
 
 Crea el `.env` raíz:
@@ -410,7 +410,7 @@ docker compose ps
 
 ### Paso 10: Abrir el dashboard
 
-Desde tu navegador (en cualquier computadora): **http://167.99.123.45**
+Desde tu navegador (en cualquier computadora): **http://<IP-pública>**
 
 ```
 ┌──────────────────────────────────────────┐
