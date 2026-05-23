@@ -204,11 +204,13 @@ Verás la landing page de Achilles. Click en **SIGN IN** (arriba a la derecha o 
 Verás el modal de login de Clerk. Tienes dos opciones:
 
 - **Con Google**: click en "Continue with Google" — Clerk maneja el OAuth automáticamente. Este botón aparece si dejaste Google habilitado en el Paso 2.
-- **Con email**: escribe tu email, click **Continue** — Clerk te enviará un código de verificación para confirmar la cuenta.
-
-Si es la primera vez, click en **Sign up** (abajo del todo) para crear tu cuenta.
+- **Con email**: click en **Sign up** (abajo del todo), rellena tu nombre, email y contraseña, y click **Continue**.
 
 ![Clerk — Sign in](images/QS-01/clerk-signup.png)
+
+Si vas con email, al hacer click en **Sign up** verás el formulario de creación de cuenta:
+
+![Clerk — Create account](images/QS-01/clerk-create-account.png)
 
 ### Paso 6: Verificar Elasticsearch
 
