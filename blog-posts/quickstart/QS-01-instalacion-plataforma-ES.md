@@ -179,7 +179,7 @@ CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxx
 docker compose --profile elasticsearch up -d
 ```
 
-> **¿Por qué `--profile elasticsearch`?** Sin ese flag Analytics no tiene datos. El perfil también arranca Elasticsearch y carga 1,000 resultados de ejemplo automáticamente.
+> **¿Por qué `--profile elasticsearch`?** Achilles guarda los resultados de los tests en Elasticsearch — el módulo de Analytics lo usa para calcular el Defense Score, el heatmap de MITRE ATT&CK y las tendencias. Sin ese flag solo arrancan el backend y el frontend, pero Analytics no tiene datos. El perfil también carga 1,000 resultados de ejemplo automáticamente.
 
 Espera 1-2 minutos mientras los contenedores arrancan. Verifica que todo está corriendo:
 
