@@ -166,13 +166,6 @@ CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxx
 > **`CORS_ORIGIN`** — no necesitas cambiarlo si usas Docker. Nginx sirve el frontend en el puerto 80 y hace de proxy hacia el backend internamente, el navegador nunca llama directamente al puerto 3000 y CORS no se dispara. Solo importa si corres Achilles fuera de Docker (modo desarrollo).
 > **`ENCRYPTION_SECRET` y `AGENT_SERVER_URL`** — déjalos como están. `AGENT_SERVER_URL` lo ajustamos en QS-02 cuando instalemos el agente.
 
-Crea el archivo `.env` en la raíz del proyecto (Docker Compose lo lee para pasar variables al contenedor del frontend):
-
-```bash
-# En la raíz del proyecto (junto a docker-compose.yml)
-cp .env.example .env
-```
-
 Abre `.env` con `nano .env` y añade tu Clerk publishable key al principio del archivo — el `.env.example` raíz no trae este campo, hay que añadirlo manualmente:
 
 ```bash
