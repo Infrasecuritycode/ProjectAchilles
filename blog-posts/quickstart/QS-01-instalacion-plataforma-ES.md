@@ -271,7 +271,7 @@ ssh root@<IP-pública>
 # ssh root@<IP-pública>
 ```
 
-### Paso 3: Instalar Docker y Git
+### Paso 3: Instalar Docker, Git y preparar el sistema
 
 ```bash
 # Actualizar el sistema
@@ -288,6 +288,19 @@ docker compose version
 apt install -y git
 ```
 
+Antes de continuar, añade **swap**:
+
+```bash
+fallocate -l 2G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+```
+
+> **¿Por qué?** Docker construye tres imágenes en paralelo (frontend, backend, wiki). En un servidor de 1 GB ese proceso agota la RAM y el sistema mata el proceso a mitad. El swap funciona como RAM de respaldo en disco — no es tan rápido, pero evita que la build falle.
+>
+> **Alternativa:** Si prefieres no lidiar con esto, usa el plan de **$12/mes (2 GB RAM)** — Basic → Premium Intel → $12/mes. La build corre sin problemas y el dashboard responde más rápido con múltiples agentes activos.
+
 ### Paso 4: Descargar Achilles
 
 ```bash
@@ -297,21 +310,16 @@ cd ProjectAchilles
 
 ### Paso 5: Exponer los puertos al exterior
 
-El `docker-compose.yml` por defecto enlaza los puertos solo a `localhost` (seguro para máquinas locales, pero inaccesible desde internet en un VPS). Crea un archivo de sobreescritura para abrirlos:
+Por seguridad, el `docker-compose.yml` enlaza los puertos solo a `127.0.0.1` (localhost). Eso está bien para una máquina local donde tú eres el único usuario, pero en un VPS significa que nadie puede acceder desde fuera — ni tú desde tu navegador, ni los agentes para conectarse al backend.
+
+Edita el archivo para abrir los puertos a todas las interfaces:
 
 ```bash
-cat > docker-compose.override.yml << 'EOF'
-services:
-  backend:
-    ports:
-      - "0.0.0.0:3000:3000"
-  frontend:
-    ports:
-      - "0.0.0.0:80:80"
-EOF
+sed -i 's/127.0.0.1:3000/0.0.0.0:3000/g' docker-compose.yml
+sed -i 's/127.0.0.1:80/0.0.0.0:80/g' docker-compose.yml
 ```
 
-Docker Compose fusiona este archivo automáticamente al hacer `docker compose up`, no necesitas modificar el `docker-compose.yml` original.
+> Estos dos comandos reemplazan el binding de localhost por `0.0.0.0` (todas las interfaces de red), que es lo que necesitas para que el servidor sea accesible desde internet.
 
 ### Paso 6: Crear tu cuenta de Clerk (autenticación gratuita)
 
@@ -360,7 +368,7 @@ Usa **Ctrl+W** para buscar cada campo. Edita solo estos 6 valores:
 
 Guarda con **Ctrl+X → Y → Enter**.
 
-Crea el `.env` raíz (para el frontend — estando en `~/ProjectAchilles`):
+Ahora configura el `.env` raíz (estando en `~/ProjectAchilles`):
 
 ```bash
 cd ..
@@ -368,13 +376,18 @@ cp .env.example .env
 nano .env
 ```
 
-Busca `CLERK_PUBLISHABLE_KEY` y ponle tu `pk_test_...`:
+Ve al final del archivo y añade esta línea:
 
 ```bash
 CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxx
 ```
 
 Guarda con **Ctrl+X → Y → Enter**.
+
+> **¿Por qué este archivo y por qué al final?**
+> El `.env` raíz lo lee Docker Compose al arrancar y se lo pasa al contenedor del frontend como variable de entorno. El frontend (React) necesita la publishable key de Clerk para mostrar el modal de login — sin ella la página carga pero no puedes autenticarte.
+>
+> El `.env.example` raíz no incluye este campo porque en instalaciones locales el frontend suele correr fuera de Docker (con `npm run dev`) y lee las variables de otro lado. En Docker hay que añadirlo manualmente. Es la única línea que necesitas agregar.
 
 ### Paso 8: Abrir los puertos en el firewall de DigitalOcean
 
@@ -392,57 +405,60 @@ En el panel de DigitalOcean → tu droplet → "Networking" → "Firewalls"
 
 > Si prefieres usar `ufw` desde el servidor:
 > ```bash
+> ufw allow 22/tcp    # SSH — añade esto PRIMERO o te quedas sin acceso
 > ufw allow 80/tcp
 > ufw allow 3000/tcp
 > ufw enable
 > ```
 
-### Paso 9: Arrancar todo
+### Paso 9: Ajustar la memoria de Elasticsearch
+
+Elasticsearch viene configurado para usar hasta 1 GB de heap — demasiado para un servidor de 1 GB. Antes de arrancar, reduce ese límite:
 
 ```bash
-docker compose --profile elasticsearch up -d
+sed -i 's/ES_JAVA_OPTS=-Xms512m -Xmx1024m/ES_JAVA_OPTS=-Xms256m -Xmx256m/' docker-compose.yml
 ```
 
-Espera 1-2 minutos y verifica:
+> **¿Por qué?** Elasticsearch es una base de datos Java diseñada para servidores con bastante RAM. En un VPS de 1 GB compite con el backend, el frontend y el sistema operativo. Con 256 MB de heap funciona bien para uso normal — si tienes muchos agentes o consultas intensas, considera el plan de $12/mes (2 GB).
+
+### Paso 10: Arrancar todo
+
+```bash
+docker compose --profile elasticsearch up -d backend frontend elasticsearch es-seed
+```
+
+> **¿Por qué no `docker compose up` a secas?** El servicio `wiki` (documentación) consume demasiada RAM durante la build en un servidor de 1 GB y mata el proceso. No es necesario para usar Achilles — lo excluimos nombrando los servicios explícitamente.
+
+La primera vez tarda **15-20 minutos** porque construye las imágenes desde cero. Las siguientes veces arranca en segundos gracias al caché.
+
+Cuando termine verifica que todo está corriendo:
 
 ```bash
 docker compose ps
-# achilles-backend    Up   0.0.0.0:3000->3000/tcp
-# achilles-frontend   Up   0.0.0.0:80->80/tcp
-# elasticsearch       Up   0.0.0.0:9200->9200/tcp
 ```
 
-### Paso 10: Abrir el dashboard
+Deberías ver backend, frontend y elasticsearch en estado `Up` o `Healthy`.
 
-Desde tu navegador (en cualquier computadora): **http://<IP-pública>**
+### Paso 11: Abrir el dashboard
 
+Desde tu navegador (en cualquier computadora): **http://`<IP-pública>`**
+
+Verás la landing page de Achilles. Click en **SIGN IN** para continuar.
+
+![Achilles — landing page](images/QS-01/achilles-landing.png)
+
+El login y la creación de cuenta funcionan igual que en la instalación local — sigue los mismos pasos del **Paso 5** de la Sección 1A.
+
+### Paso 12: Verificar Elasticsearch
+
+Ve a **Settings → Integrations**. Deberías ver Analytics en estado **Connected** — Docker conecta Elasticsearch automáticamente, no necesitas configurar nada.
+
+Si aparece "Not configured", pon:
 ```
-┌──────────────────────────────────────────┐
-│           PROJECT ACHILLES               │
-│                                          │
-│  Email:      [____________________]      │
-│  Contraseña: [____________________]      │
-│                                          │
-│  [ Iniciar sesión ]  [ Registrarse ]     │
-└──────────────────────────────────────────┘
-```
-
-Crea tu primera cuenta con "Registrarse". Usa tu email. Clerk te enviará un código de verificación.
-
-### Paso 11: Conectar Elasticsearch
-
-```
-Settings → Integrations → Analytics
-
 Elasticsearch URL: http://elasticsearch:9200
-(dentro de Docker, usa este hostname)
-
-[ Test Connection ] → ✅ Connected · 1,000 documents
-
-[ Guardar ]
 ```
 
-Ve a **Analytics**, deberías ver el dashboard con datos de ejemplo ya cargados.
+Ve a **Analytics → Dashboard** y verás los datos de ejemplo ya cargados: Defense Score, heatmap de MITRE ATT&CK y tendencias.
 
 
 ---
@@ -458,15 +474,14 @@ OPCIÓN A — Local (gratis):
 
 OPCIÓN B — DigitalOcean (~$8/mes):
   1. Crear droplet Ubuntu                     (5 min)
-  2. Instalar Docker y Git                    (5 min)
-  3. Clonar repo                              (2 min)
-  4. Exponer puertos                          (2 min)
-  5. Crear cuenta de Clerk                    (5 min)
-  6. Configurar .env con IP pública           (5 min)
-  7. Abrir puertos en el firewall             (3 min)
-  8. docker compose up                        (3 min)
-  9. Crear cuenta + conectar Elasticsearch    (5 min)
-  Total: ~35 minutos
+  2. Instalar Docker, Git y swap              (5 min)
+  3. Clonar repo + editar docker-compose.yml  (3 min)
+  4. Crear cuenta de Clerk                    (5 min)
+  5. Configurar .env con IP pública           (5 min)
+  6. Abrir puertos en el firewall (SSH primero) (2 min)
+  7. docker compose up                        (20 min primera vez)
+  8. Crear cuenta + verificar Elasticsearch   (5 min)
+  Total: ~40 minutos (+ 20 min de build en background)
 ```
 
 El agente y el primer test se cubren en **QS-02** y **QS-04**.
