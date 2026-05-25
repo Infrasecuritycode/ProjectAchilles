@@ -445,7 +445,7 @@ Desde tu navegador (en cualquier computadora): **http://`<IP-pública>`**
 
 Verás la landing page de Achilles. Click en **SIGN IN** para continuar.
 
-![Achilles — landing page](images/QS-01/achilles-landing.png)
+![Achilles — landing page desde DigitalOcean](images/QS-01/achilles-landing-do.png)
 
 El login y la creación de cuenta funcionan igual que en la instalación local — sigue los mismos pasos del **Paso 5** de la Sección 1A.
 
@@ -459,6 +459,8 @@ Elasticsearch URL: http://elasticsearch:9200
 ```
 
 Ve a **Analytics → Dashboard** y verás los datos de ejemplo ya cargados: Defense Score, heatmap de MITRE ATT&CK y tendencias.
+
+![Analytics — Dashboard](images/QS-01/analytics-dashboard-do.png)
 
 
 ---
