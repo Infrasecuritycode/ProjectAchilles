@@ -267,8 +267,6 @@ Elasticsearch URL: http://elasticsearch:9200
 ```
 Guarda y debería conectar de inmediato.
 
-Ahora ve a **Analytics → Dashboard**. Verás el dashboard con los datos de ejemplo ya cargados: Defense Score, Trend Overview, Score by Category y Test Activity.
-
 ![Analytics — Dashboard](images/QS-01/analytics-dashboard-local.png)
 
 ---
