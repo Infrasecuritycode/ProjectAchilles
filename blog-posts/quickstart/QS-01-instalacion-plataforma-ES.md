@@ -230,7 +230,28 @@ Verás aparecer el módulo **Endpoints** en la barra lateral con Dashboard, Agen
 
 > **¿Por qué hay que hacerlo manualmente?** Achilles no asigna el rol admin automáticamente al primer usuario para evitar que cualquiera que se registre tenga acceso total. Tú controlas quién tiene qué nivel de acceso desde Clerk.
 
-### Paso 7: Verificar Elasticsearch
+### Paso 7: Configurar el Session Token de Clerk
+
+Este paso es obligatorio — sin él, el rol que acabas de asignar no llega al dashboard y Achilles sigue tratándote como usuario sin permisos.
+
+Clerk emite un JWT (token de sesión) que el frontend lee para saber qué rol tienes. Por defecto ese token no incluye el `publicMetadata` donde guardaste `{"role": "admin"}`. Hay que añadirlo manualmente:
+
+1. Ve a [dashboard.clerk.com](https://dashboard.clerk.com) → tu aplicación → **Configure → Sessions**
+2. Busca la sección **"Customize session token"**
+3. En el editor de Claims (muestra `{}`), reemplaza el contenido con:
+   ```json
+   {
+     "metadata": "{{user.public_metadata}}"
+   }
+   ```
+4. Click **Save**
+5. Cierra sesión en Achilles y vuelve a entrar
+
+Verás aparecer el módulo **Endpoints** en la barra lateral. Si ya tenías la sesión abierta cuando asignaste el rol, cerrar sesión y volver a entrar fuerza a Clerk a emitir un nuevo token con el rol incluido.
+
+> **¿Por qué `{{user.public_metadata}}`?** Es la sintaxis de Clerk para inyectar el campo `publicMetadata` del usuario dentro del JWT. El frontend de Achilles lee `user.publicMetadata.role` del token — si ese campo no está en el token, el rol no existe desde el punto de vista del dashboard, aunque lo hayas guardado en Clerk.
+
+### Paso 8: Verificar Elasticsearch
 
 Ve a **Settings → Integrations**. Deberías ver Analytics (Elasticsearch) en estado **Connected** — Docker conecta Elasticsearch automáticamente al arrancar, no necesitas configurar nada.
 
@@ -475,7 +496,21 @@ Una vez asignado el rol verás el sidebar completo con Tests, Analytics y Endpoi
 
 ![Dashboard con Endpoints visible](images/QS-01/dashboard-endpoints-do.png)
 
-### Paso 13: Verificar Elasticsearch
+### Paso 13: Configurar el Session Token de Clerk
+
+Igual que en la instalación local (Paso 7 de la Sección 1A), hay que añadir el `publicMetadata` al JWT de Clerk. Sin este paso el rol que asignaste en Clerk no llega al dashboard:
+
+1. Ve a [dashboard.clerk.com](https://dashboard.clerk.com) → tu aplicación → **Configure → Sessions**
+2. En la sección **"Customize session token"**, en el editor de Claims, reemplaza `{}` con:
+   ```json
+   {
+     "metadata": "{{user.public_metadata}}"
+   }
+   ```
+3. Click **Save**
+4. Cierra sesión en Achilles y vuelve a entrar para que el nuevo token se emita
+
+### Paso 14: Verificar Elasticsearch
 
 Ve a **Settings → Integrations**. Deberías ver Analytics en estado **Connected** — Docker conecta Elasticsearch automáticamente, no necesitas configurar nada.
 
@@ -499,8 +534,10 @@ Ve a **Analytics → Dashboard** y verás los datos de ejemplo ya cargados: Defe
 OPCIÓN A — Local (gratis):
   1. Clonar repo + configurar .env            (10 min)
   2. docker compose up                        (5 min)
-  3. Crear cuenta + conectar Elasticsearch    (5 min)
-  Total: ~20 minutos
+  3. Crear cuenta + asignar rol admin         (5 min)
+  4. Configurar Session Token en Clerk        (2 min)
+  5. Verificar Elasticsearch                  (2 min)
+  Total: ~25 minutos
 
 OPCIÓN B — DigitalOcean (~$8/mes):
   1. Crear droplet Ubuntu                     (5 min)
@@ -510,7 +547,8 @@ OPCIÓN B — DigitalOcean (~$8/mes):
   5. Configurar .env con IP pública           (5 min)
   6. Abrir puertos en el firewall (SSH primero) (2 min)
   7. docker compose up                        (20 min primera vez)
-  8. Crear cuenta + verificar Elasticsearch   (5 min)
+  8. Asignar rol admin + Session Token        (5 min)
+  9. Verificar Elasticsearch                  (2 min)
   Total: ~40 minutos (+ 20 min de build en background)
 ```
 
