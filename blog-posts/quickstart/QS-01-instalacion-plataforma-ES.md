@@ -259,7 +259,7 @@ Verás aparecer el módulo **Endpoints** en la barra lateral. Si ya tenías la s
 
 Ve a **Settings → Integrations**. Deberías ver Analytics (Elasticsearch) en estado **Connected** — Docker conecta Elasticsearch automáticamente al arrancar, no necesitas configurar nada.
 
-![Settings — Integrations](images/QS-01/settings-integrations.png)
+![Settings — Integrations](images/QS-01/settings-integrations-local.png)
 
 Si por alguna razón aparece "Not configured", expande la tarjeta y pon:
 ```
