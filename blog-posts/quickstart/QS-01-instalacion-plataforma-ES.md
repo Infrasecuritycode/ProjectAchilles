@@ -214,9 +214,11 @@ Si vas con email, al hacer click en **Sign up** verás el formulario de creació
 
 ### Paso 6: Asignar tu rol de administrador
 
-Después de crear tu cuenta verás el dashboard, pero el módulo **Endpoints** (donde enrolas y gestionas los agentes) estará oculto. Esto es normal — Achilles usa un sistema de roles y la primera cuenta no tiene ningún rol asignado automáticamente.
+Después de crear tu cuenta verás el dashboard, pero el módulo **Endpoints** (donde enrolas y gestionas los agentes) estará oculto:
 
-Para activar todos los módulos, asigna el rol `admin` a tu usuario en Clerk:
+![Dashboard sin Endpoints](images/QS-01/dashboard-no-endpoints-local.png)
+
+Esto es normal — Achilles usa un sistema de roles y la primera cuenta no tiene ningún rol asignado automáticamente. Para activar todos los módulos, asigna el rol `admin` a tu usuario en Clerk:
 
 1. Ve a [dashboard.clerk.com](https://dashboard.clerk.com) → tu aplicación → **Users**
 2. Click en tu usuario
@@ -226,7 +228,9 @@ Para activar todos los módulos, asigna el rol `admin` a tu usuario en Clerk:
    ```
 4. Guarda y recarga Achilles
 
-Verás aparecer el módulo **Endpoints** en la barra lateral con Dashboard, Agents y Tasks.
+Verás aparecer el módulo **Endpoints** en la barra lateral con Dashboard, Agents y Tasks:
+
+![Dashboard con Endpoints visible](images/QS-01/dashboard-endpoints-do.png)
 
 > **¿Por qué hay que hacerlo manualmente?** Achilles no asigna el rol admin automáticamente al primer usuario para evitar que cualquiera que se registre tenga acceso total. Tú controlas quién tiene qué nivel de acceso desde Clerk.
 
@@ -490,7 +494,11 @@ El login y la creación de cuenta funcionan igual que en la instalación local �
 
 ### Paso 12: Asignar tu rol de administrador
 
-Igual que en la instalación local, después de crear tu cuenta el módulo **Endpoints** estará oculto hasta que asignes el rol en Clerk. Sigue los mismos pasos del **Paso 6** de la Sección 1A (`{"role": "admin"}` en Public metadata).
+Igual que en la instalación local, después de crear tu cuenta el módulo **Endpoints** estará oculto:
+
+![Dashboard sin Endpoints](images/QS-01/dashboard-no-endpoints-do.png)
+
+Sigue los mismos pasos del **Paso 6** de la Sección 1A (`{"role": "admin"}` en Public metadata de Clerk).
 
 Una vez asignado el rol verás el sidebar completo con Tests, Analytics y Endpoints:
 
