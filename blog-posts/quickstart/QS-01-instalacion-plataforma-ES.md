@@ -453,6 +453,8 @@ El login y la creación de cuenta funcionan igual que en la instalación local �
 
 Ve a **Settings → Integrations**. Deberías ver Analytics en estado **Connected** — Docker conecta Elasticsearch automáticamente, no necesitas configurar nada.
 
+![Settings — Integrations](images/QS-01/settings-integrations-do.png)
+
 Si aparece "Not configured", pon:
 ```
 Elasticsearch URL: http://elasticsearch:9200
