@@ -216,7 +216,7 @@ Si vas con email, al hacer click en **Sign up** verás el formulario de creació
 
 Después de crear tu cuenta verás el dashboard, pero el módulo **Endpoints** (donde enrolas y gestionas los agentes) estará oculto:
 
-![Dashboard sin Endpoints](images/QS-01/dashboard-no-endpoints-local.png)
+![Dashboard sin Endpoints](images/QS-01/dashboard-sin-endpoints-local.png)
 
 Esto es normal — Achilles usa un sistema de roles y la primera cuenta no tiene ningún rol asignado automáticamente. Para activar todos los módulos, asigna el rol `admin` a tu usuario en Clerk:
 
