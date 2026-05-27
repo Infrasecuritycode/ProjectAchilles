@@ -9,7 +9,7 @@
 ## TL;DR
 
 - Achilles tiene dos partes: la plataforma (dashboard + servidor) y el agente (en cada máquina a validar)
-- Este post cubre solo la plataforma, el agente lo instalamos en QS-03
+- Este post cubre solo la plataforma, el agente lo instalamos en QS-02
 - Dos opciones: Docker en tu máquina local (Opción A, gratis) o VPS en la nube como DigitalOcean (Opción B, ~$8/mes)
 - Al terminar tendrás el dashboard corriendo con datos de ejemplo
 - Tiempo estimado: 30 min (local) o 40 min (DigitalOcean)
@@ -152,7 +152,7 @@ cp .env.example .env
 > Los archivos `.env.example` nunca se modifican — son la plantilla guardada en el repo.
 > Los `.env` son tu copia local con tus valores reales, y están en `.gitignore` para que no se suban a GitHub.
 
-Abre `backend/.env` con `nano backend/.env` y cambia solo estos tres valores:
+Abre `backend/.env` con `nano backend/.env` y cambia solo estos dos valores:
 
 ```bash
 # ── Clerk (obligatorio) ───────────────────────────
@@ -163,7 +163,7 @@ CLERK_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxx
 > **`CORS_ORIGIN`** — no necesitas cambiarlo si usas Docker. Nginx sirve el frontend en el puerto 80 y hace de proxy hacia el backend internamente, el navegador nunca llama directamente al puerto 3000 y CORS no se dispara. Solo importa si corres Achilles fuera de Docker (modo desarrollo).
 > **`ENCRYPTION_SECRET` y `AGENT_SERVER_URL`** — déjalos como están. `AGENT_SERVER_URL` lo ajustamos en QS-02 cuando instalemos el agente.
 
-Abre `.env` con `nano .env` y añade tu Clerk publishable key al principio del archivo — el `.env.example` raíz no trae este campo, hay que añadirlo manualmente:
+Abre `.env` con `nano .env` y añade tu Clerk publishable key al final del archivo — el `.env.example` raíz no trae este campo, hay que añadirlo manualmente:
 
 ```bash
 # ============ Clerk (Frontend) ============
@@ -378,18 +378,19 @@ Achilles usa Clerk para el login de usuarios. Es gratuito y no requiere tarjeta 
 
 ### Paso 7: Configurar las variables de entorno
 
-El repo ya incluye un `.env.example` con todas las variables. Ya fue copiado automáticamente a `.env` — solo tienes que editar los valores.
-
-Primero genera los secrets de seguridad (corre cada comando por separado y guarda los resultados):
+Primero crea los archivos `.env` a partir de los ejemplos y genera los secrets de seguridad:
 
 ```bash
-openssl rand -base64 32   # para SESSION_SECRET
-openssl rand -base64 32   # para ENCRYPTION_SECRET
+cp backend/.env.example backend/.env
+
+openssl rand -base64 32   # para SESSION_SECRET (guarda el resultado)
+openssl rand -base64 32   # para ENCRYPTION_SECRET (guarda el resultado)
 ```
 
-Luego abre el `.env` del backend (estando dentro de `~/ProjectAchilles/backend`):
+Luego abre el `.env` del backend:
 
 ```bash
+cd backend
 nano .env
 ```
 
@@ -527,8 +528,6 @@ Si aparece "Not configured", pon:
 Elasticsearch URL: http://elasticsearch:9200
 ```
 
-Ve a **Analytics → Dashboard** y verás los datos de ejemplo ya cargados: Defense Score, heatmap de MITRE ATT&CK y tendencias.
-
 ![Analytics — Dashboard](images/QS-01/analytics-dashboard-do.png)
 
 
@@ -558,8 +557,6 @@ OPCIÓN B — DigitalOcean (~$8/mes):
   Total: ~40 minutos (+ 20 min de build en background)
 ```
 
-El agente y el primer test se cubren en **QS-02** y **QS-04**.
-
 ---
 
 ## Puntos Clave
@@ -568,6 +565,7 @@ El agente y el primer test se cubren en **QS-02** y **QS-04**.
 ✅ La plataforma incluye dashboard, backend y Elasticsearch, todo con un solo comando
 ✅ Los datos de ejemplo se cargan automáticamente al arrancar con `--profile elasticsearch`
 ✅ Al terminar este post tienes el dashboard corriendo, el agente viene en QS-02
+✅ El agente y el primer test se cubren en **QS-02** y **QS-04**
 
 ---
 
