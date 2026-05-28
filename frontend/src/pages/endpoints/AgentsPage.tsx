@@ -15,6 +15,7 @@ import {
   setFilters,
   setPage,
   setAgents,
+  clearError,
   tagAgent,
   untagAgent,
   updateAgentStatus,
@@ -106,6 +107,7 @@ export default function AgentsPage() {
     try {
       const result = await agentApi.listAgents(filters);
       dispatch(setAgents({ agents: result.agents, total: result.total }));
+      dispatch(clearError());
     } catch {
       // Silent — don't surface transient poll failures
     }
