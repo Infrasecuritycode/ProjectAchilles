@@ -521,14 +521,14 @@ Igual que en la instalación local (Paso 7 de la Sección 1A), hay que añadir e
 
 Ve a **Settings → Integrations**. Deberías ver Analytics en estado **Connected** — Docker conecta Elasticsearch automáticamente, no necesitas configurar nada.
 
-![Settings — Integrations](images/QS-01/settings-integrations-do.png)
+![Settings — Integrations](images/QS-01/settings-integrations-local.png)
 
 Si aparece "Not configured", pon:
 ```
 Elasticsearch URL: http://elasticsearch:9200
 ```
 
-![Analytics — Dashboard](images/QS-01/analytics-dashboard-do.png)
+![Analytics — Dashboard](images/QS-01/analytics-dashboard-local.png)
 
 
 ---
