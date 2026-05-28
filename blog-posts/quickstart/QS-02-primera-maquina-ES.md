@@ -9,10 +9,10 @@
 ## TL;DR
 
 - El "agente" es un programa pequeño (~8 MB) que instalas en cada máquina que quieres monitorear
-- El proceso tiene 3 pasos: generar un token → descargar el agente → instalarlo
+- El proceso tiene 3 pasos: generar un token → copiar el comando → ejecutarlo en la máquina
 - Funciona en Windows, Linux y macOS
 - Una vez instalado, la máquina aparece como "online" en el dashboard en menos de 1 minuto
-- No necesitas abrir puertos ni configurar firewalls, el agente se conecta hacia afuera (como un navegador)
+- No necesitas abrir puertos ni configurar firewalls — el agente se conecta hacia afuera (como un navegador)
 
 ---
 
@@ -30,105 +30,90 @@ Es un programa liviano. No consume recursos notables. No afecta el rendimiento d
 
 ## Paso 1: Generar un Token de Instalación
 
-El token es un código único que le dice al agente "perteneces a esta cuenta de Achilles". Es de un solo uso por seguridad.
+El token es un código único que le dice al agente "perteneces a esta cuenta de Achilles".
 
-```
 Desde el dashboard:
-Endpoints → Tokens → [+ Nuevo Token]
 
-Opciones:
-  Nombre:    "Mi primera máquina de prueba"
-  Válido por: 24 horas (suficiente para instalarlo ahora)
-
-[ Crear Token ]
-
-Resultado:
-eyJhY2hpbGxlcyI6InRydWUiLCJ0b2tlbklkIjoiYWJjMTIzIn0...
-
-→ Copia este token, lo necesitas en el Paso 3
+```
+Endpoints → Agents → botón "Enroll Agent" (arriba a la derecha)
 ```
 
-**Tip:** El token expira en 24 horas. Si tardas más, solo crea uno nuevo, es instantáneo.
+Se despliega un formulario con dos campos:
+
+```
+TTL (hours):  24      ← cuántas horas tiene de vida el token
+Max Uses:      1      ← cuántas máquinas pueden usarlo
+
+[ Generate Token ]
+```
+
+Deja los valores por defecto (24 horas, 1 uso) y haz click en **Generate Token**.
+
+El dashboard muestra inmediatamente el token y los comandos de instalación listos para copiar, uno por plataforma. No necesitas descargar nada por separado.
 
 ---
 
-## Paso 2: Descargar el Agente
+## Paso 2: Copiar y Ejecutar el Comando
 
-```
-Settings → Agent → Descargar Agente
-
-Elige tu plataforma:
-  ● Windows (64-bit)     → achilles-agent-windows.exe
-  ○ Linux (64-bit)       → achilles-agent-linux
-  ○ macOS (Intel)        → achilles-agent-macos-intel
-  ○ macOS (Apple Silicon)→ achilles-agent-macos-arm
-
-[ Descargar ]
-```
-
-El archivo descargado pesa unos 8 MB. Es un ejecutable que no necesita instalador, no necesita Java, no necesita nada más.
-
----
-
-## Paso 3: Instalar en la Máquina
+Al generar el token, el dashboard muestra los comandos con el token y la URL de tu servidor ya rellenos. Solo tienes que copiar el de tu plataforma y ejecutarlo en la máquina objetivo.
 
 ### Windows
 
-Abre **PowerShell como Administrador** y ejecuta:
+Abre **PowerShell como Administrador** y ejecuta el comando que aparece bajo **"Windows (PowerShell)"**:
 
 ```powershell
-# 1. Mueve el archivo a una carpeta permanente
-New-Item -ItemType Directory -Path "C:\achilles" -Force
-Move-Item achilles-agent-windows.exe C:\achilles\
-
-# 2. Instala como servicio de Windows (arranque automático)
-C:\achilles\achilles-agent-windows.exe install `
-  --server https://tu-instancia.achilles.io `
-  --token eyJhY2hpbGxlcyI6...
-
-# Verifica que está corriendo:
-Get-Service AchillesAgent
-# Status: Running ✓
+Invoke-WebRequest -Uri "http://<tu-servidor>/api/agent/download?os=windows&arch=amd64" `
+  -OutFile achilles-agent.exe; `
+  .\achilles-agent.exe --enroll <TOKEN> --server http://<tu-servidor> --install
 ```
 
-¿No sabes qué es PowerShell como Administrador? Haz click derecho en el menú Inicio → "Windows PowerShell (Administrador)".
+> **¿No sabes qué es PowerShell como Administrador?** Click derecho en el menú Inicio → "Windows PowerShell (Administrador)".
+
+El comando descarga el agente, lo registra en tu cuenta y lo instala como servicio de Windows con arranque automático, todo en un paso.
 
 ### Linux
 
+Ejecuta el comando bajo **"Linux (amd64)"** o **"Linux (arm64)"** según tu arquitectura:
+
 ```bash
-# Da permisos de ejecución al archivo
-chmod +x achilles-agent-linux
-
-# Instala como servicio del sistema
-sudo ./achilles-agent-linux install \
-  --server https://tu-instancia.achilles.io \
-  --token eyJhY2hpbGxlcyI6...
-
-# Verifica que está corriendo:
-systemctl status achilles-agent
-# Active: active (running) ✓
+curl -fSL "http://<tu-servidor>/api/agent/download?os=linux&arch=amd64" \
+  -o achilles-agent && \
+  chmod +x achilles-agent && \
+  sudo ./achilles-agent --enroll <TOKEN> --server http://<tu-servidor> --install
 ```
 
 ### macOS
 
-```bash
-# Da permisos de ejecución
-chmod +x achilles-agent-macos-arm  # o -intel según tu Mac
+Ejecuta el comando bajo **"macOS (Apple Silicon)"** o **"macOS (Intel)"**:
 
-# Instala (requiere sudo)
-sudo ./achilles-agent-macos-arm install \
-  --server https://tu-instancia.achilles.io \
-  --token eyJhY2hpbGxlcyI6...
+```bash
+# Apple Silicon (M1/M2/M3)
+curl -fSL "http://<tu-servidor>/api/agent/download?os=darwin&arch=arm64" \
+  -o achilles-agent && \
+  chmod +x achilles-agent && \
+  sudo ./achilles-agent --enroll <TOKEN> --server http://<tu-servidor> --install
+
+# Intel
+curl -fSL "http://<tu-servidor>/api/agent/download?os=darwin&arch=amd64" \
+  -o achilles-agent && \
+  chmod +x achilles-agent && \
+  sudo ./achilles-agent --enroll <TOKEN> --server http://<tu-servidor> --install
 ```
+
+> **`<tu-servidor>`** es la URL que configuraste en QS-01:
+> - Instalación local: `http://localhost:3000`
+> - DigitalOcean: `http://<IP-pública>:3000`
+>
+> El dashboard ya rellena esto automáticamente en los comandos que muestra — solo copia y pega.
 
 ---
 
-## Paso 4: Verifica que Apareció en el Dashboard
+## Paso 3: Verificar que Apareció en el Dashboard
 
-Vuelve al dashboard y ve a **Endpoints**:
+Vuelve al dashboard y ve a **Endpoints → Agents**:
 
 ```
-ENDPOINTS                                          1 online
+AGENTS                                             1 online
 
 Hostname        Sistema    Versión   IP            Estado
 ─────────────────────────────────────────────────────────
@@ -166,18 +151,18 @@ El agente solo ejecuta los tests que le asignas y reporta si fueron detectados o
 
 Una vez que viste que funciona en la primera, el proceso para las demás es idéntico:
 
-1. Genera un token nuevo (cada token es para una sola máquina)
-2. Descarga el agente para esa plataforma
-3. Instala con el token
+1. Genera un token nuevo (cada token tiene `Max Uses: 1` por defecto)
+2. Copia el comando para esa plataforma
+3. Ejecútalo en la máquina objetivo
 4. Repite
 
-Para una flota grande (20+ máquinas), puedes automatizar con tu herramienta de gestión existente (SCCM, Ansible, Chef, etc.), el comando de instalación es siempre el mismo, solo cambia el token.
+Para una flota grande (20+ máquinas), puedes aumentar el `Max Uses` al generar el token — así un solo token sirve para varias máquinas sin tener que generar uno por cada una. Útil si despliegas con Ansible, SCCM o similar.
 
 ---
 
 ## Gestionar Tus Máquinas
 
-Desde **Endpoints** puedes ver información de cada máquina:
+Desde **Endpoints → Agents** puedes ver el detalle de cada máquina:
 
 ```
 Click en "MI-PC-01"
@@ -208,30 +193,38 @@ Desde aquí también puedes:
 ```
 Causa más común: el agente no puede llegar al servidor Achilles
 
-Verificar en Windows:
-Get-Service AchillesAgent
-→ Si Status: Stopped → el servicio no arrancó
+Windows — verificar el servicio:
+  Get-Service AchillesAgent
+  → Si Status: Stopped, el servicio no arrancó
 
-→ Ver logs:
-   Get-EventLog -LogName Application -Source AchillesAgent -Newest 10
+  Ver logs:
+  Get-EventLog -LogName Application -Source AchillesAgent -Newest 10
 
-Causa común: la URL del servidor está mal o hay firewall bloqueando
+Linux — verificar el servicio:
+  systemctl status achilles-agent
+
+macOS — verificar el servicio:
+  sudo launchctl list | grep achilles
+
+Causa habitual: la URL del servidor está mal o hay un firewall bloqueando
+el puerto 3000 entre la máquina y el servidor Achilles.
 ```
 
-**El token dice "inválido":**
+**El token dice "inválido" o "expirado":**
 ```
-Los tokens expiran. Genera uno nuevo en:
-Endpoints → Tokens → [+ Nuevo Token]
+Los tokens expiran según el TTL configurado.
+Genera uno nuevo en:
+  Endpoints → Agents → "Enroll Agent" → Generate Token
 ```
 
 **Windows Defender bloqueó el ejecutable:**
 ```
-Esto puede pasar porque es un binario nuevo.
+Esto puede pasar porque es un binario nuevo sin firma reconocida.
 
 Opciones:
-1. Añade una exclusión en Defender para C:\achilles\
-2. O descarga la versión firmada desde Settings → Agent → "Descarga firmada"
-   (requiere que hayas configurado un certificado)
+1. Añade una exclusión en Defender para la carpeta donde guardaste el agente
+2. O usa la versión firmada — requiere configurar un certificado en
+   Settings → Tests → Certificates (cubre QS-04)
 
 Nota: que Defender bloquee el agente sin firma es en sí mismo
 información útil — significa que tu defensa detecta binarios sin firma.
@@ -241,19 +234,19 @@ información útil — significa que tu defensa detecta binarios sin firma.
 
 ## Puntos Clave
 
-✅ 3 pasos: generar token → descargar → instalar
+✅ 3 pasos: generar token → copiar el comando del dashboard → ejecutarlo en la máquina
+✅ El dashboard genera los comandos listos para copiar, con el token y la URL ya rellenos
 ✅ La máquina aparece en el dashboard en menos de 60 segundos
 ✅ Funciona igual en Windows, Linux y macOS
 ✅ El agente no accede a tus datos personales ni archivos
-✅ Para más máquinas: mismo proceso, token diferente por máquina
 
 ---
 
 ## Próximo Post
 
-**QS-03: "Ejecutar Tu Primer Test. Ver Achilles en Acción"**
+**QS-03: "Un Primer Vistazo al Dashboard"**
 
-Ya tienes una máquina conectada. Ahora ejecutaremos el primer test de seguridad y veremos el resultado en tiempo real.
+Ya tienes una máquina conectada. Exploramos el dashboard de Achilles: qué muestra cada módulo y cómo orientarte antes de ejecutar tu primer test.
 
 ---
 
