@@ -25,12 +25,14 @@ beforeAll(() => {
 const getAllTestsMock = vi.hoisted(() => vi.fn());
 const getSyncStatusMock = vi.hoisted(() => vi.fn());
 const getExecutedTestUuidsMock = vi.hoisted(() => vi.fn());
+const getBuiltTestUuidsMock = vi.hoisted(() => vi.fn());
 
 vi.mock('@/services/api/browser', () => ({
   browserApi: {
     getAllTests: getAllTestsMock,
     getSyncStatus: getSyncStatusMock,
     syncTests: vi.fn(),
+    getBuiltTestUuids: getBuiltTestUuidsMock,
   },
 }));
 
@@ -82,6 +84,8 @@ describe('BrowserHomePage default sort', () => {
     getAllTestsMock.mockReset();
     getSyncStatusMock.mockReset();
     getExecutedTestUuidsMock.mockReset();
+    getBuiltTestUuidsMock.mockReset();
+    getBuiltTestUuidsMock.mockResolvedValue([]);
     getSyncStatusMock.mockResolvedValue({
       lastSyncTime: null,
       commitHash: null,

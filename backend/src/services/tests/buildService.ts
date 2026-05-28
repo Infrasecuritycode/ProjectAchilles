@@ -152,8 +152,31 @@ export class BuildService {
     return null;
   }
 
+  /**
+   * Resolve the per-build directory for `uuid` and verify it stays
+   * inside BUILDS_DIR. UUID is already validated by UUID_REGEX at the
+   * route layer, but CodeQL's flow analysis treats the regex as an
+   * insufficient sanitiser. The path.resolve → path.relative pattern
+   * here (same as findTestDir / safeBinaryPath) IS recognised, and
+   * returning the resolved canonical form is what makes downstream
+   * fs calls flow-safe.
+   *
+   * Throws if the candidate escapes BUILDS_DIR — UUID_REGEX makes
+   * this unreachable in practice; the throw exists so callers don't
+   * have to handle a null path everywhere.
+   */
+  private safeBuildDir(uuid: string): string {
+    const root = path.resolve(BUILDS_DIR);
+    const resolved = path.resolve(root, uuid);
+    const rel = path.relative(root, resolved);
+    if (rel === '' || rel.startsWith('..') || path.isAbsolute(rel)) {
+      throw new BuildError(`Invalid build uuid: ${uuid}`);
+    }
+    return resolved;
+  }
+
   private ensureBuildDir(uuid: string): string {
-    const dir = path.join(BUILDS_DIR, uuid);
+    const dir = this.safeBuildDir(uuid);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
@@ -161,7 +184,7 @@ export class BuildService {
   }
 
   private metaPath(uuid: string): string {
-    return path.join(BUILDS_DIR, uuid, 'build-meta.json');
+    return path.join(this.safeBuildDir(uuid), 'build-meta.json');
   }
 
   /** Extract GOOS from a //go:build or // +build directive in a Go file */
@@ -276,6 +299,26 @@ const ARTIFACT_DIR = \`${artifactDir}\`
 
   // ── Public API ────────────────────────────────────────────
 
+  /**
+   * Resolve a binary path inside BUILDS_DIR/<uuid>/ and verify it stays
+   * within that directory. `meta.filename` comes from JSON on disk
+   * written by buildAndSign — trusted in normal operation, but a
+   * defensive boundary check rules out path traversal if the build
+   * metadata is ever tampered with.
+   *
+   * Uses the same path.resolve → path.relative pattern as findTestDir,
+   * which CodeQL's js/path-injection query recognises as a sanitiser.
+   * Returning the resolved value (not the raw join result) is what
+   * makes the data flow recognised as safe downstream.
+   */
+  private safeBinaryPath(uuid: string, filename: string): string | null {
+    const root = path.resolve(BUILDS_DIR, uuid);
+    const resolved = path.resolve(root, filename);
+    const rel = path.relative(root, resolved);
+    if (rel === '' || rel.startsWith('..') || path.isAbsolute(rel)) return null;
+    return resolved;
+  }
+
   getBuildInfo(uuid: string): BuildInfo {
     const metaFile = this.metaPath(uuid);
     if (!fs.existsSync(metaFile)) {
@@ -283,8 +326,8 @@ const ARTIFACT_DIR = \`${artifactDir}\`
     }
     try {
       const meta: BuildMetadata = JSON.parse(fs.readFileSync(metaFile, 'utf8'));
-      const binaryPath = path.join(BUILDS_DIR, uuid, meta.filename);
-      if (!fs.existsSync(binaryPath)) {
+      const binaryPath = this.safeBinaryPath(uuid, meta.filename);
+      if (!binaryPath || !fs.existsSync(binaryPath)) {
         return { exists: false };
       }
       return {
@@ -316,10 +359,28 @@ const ARTIFACT_DIR = \`${artifactDir}\`
     if (!fs.existsSync(metaFile)) return null;
     try {
       const meta: BuildMetadata = JSON.parse(fs.readFileSync(metaFile, 'utf8'));
-      const binaryPath = path.join(BUILDS_DIR, uuid, meta.filename);
+      const binaryPath = this.safeBinaryPath(uuid, meta.filename);
+      if (!binaryPath) return null;
       return fs.existsSync(binaryPath) ? binaryPath : null;
     } catch {
       return null;
+    }
+  }
+
+  /**
+   * List the UUIDs of every test that currently has a binary — built from
+   * source or uploaded; both count. Backs the Browse tab's "Has binary"
+   * filter. One directory scan plus a metadata check per entry, reusing
+   * getBuildInfo() so the existence semantics stay identical.
+   */
+  listBuiltUuids(): string[] {
+    if (!fs.existsSync(BUILDS_DIR)) return [];
+    try {
+      return fs.readdirSync(BUILDS_DIR)
+        .filter(entry => UUID_REGEX.test(entry))
+        .filter(uuid => this.getBuildInfo(uuid).exists);
+    } catch {
+      return [];
     }
   }
 

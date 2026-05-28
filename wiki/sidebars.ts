@@ -84,6 +84,7 @@ const sidebars: SidebarsConfig = {
             'user-guide/integrations/elasticsearch',
             'user-guide/integrations/azure-entra-id',
             'user-guide/integrations/microsoft-defender',
+            'user-guide/integrations/defender-auto-resolve',
             'user-guide/integrations/alerting',
           ],
         },
@@ -164,6 +165,7 @@ const sidebars: SidebarsConfig = {
       label: 'API Reference',
       items: [
         'api-reference/overview',
+        'api-reference/programmatic-access',
         'api-reference/browser',
         'api-reference/analytics',
         'api-reference/agent-admin',

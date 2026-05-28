@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { attackSimulationExclusions } from '../../analytics/attack-simulation-filter.js';
 
 // ── Mock setup ──────────────────────────────────────────────────────
 
@@ -546,6 +547,25 @@ describe('DefenderAnalyticsService', () => {
       const result = await service.getTechniqueOverlap();
       expect(result).toEqual([]);
     });
+
+    it('restricts the test-results query to attack simulations', async () => {
+      mockSearch.mockResolvedValueOnce({
+        hits: { total: { value: 0 }, hits: [] },
+        aggregations: { techniques: { buckets: [] } },
+      });
+      mockSearch.mockResolvedValueOnce({
+        hits: { total: { value: 0 }, hits: [] },
+        aggregations: { techniques: { buckets: [] } },
+      });
+
+      await service.getTechniqueOverlap();
+
+      // First ES call is the test-results aggregation — it must exclude
+      // cyber-hygiene controls and skipped bundle stages.
+      const testQuery = mockSearch.mock.calls[0][0] as Record<string, unknown>;
+      const bool = (testQuery.query as Record<string, unknown>).bool as Record<string, unknown>;
+      expect(bool.must_not).toEqual(attackSimulationExclusions());
+    });
   });
 
   // ── Detection correlation ────────────────────────────────────
@@ -599,20 +619,25 @@ describe('DefenderAnalyticsService', () => {
 
       const result = await service.getDetectionRate(30, 60);
 
+      // T1003: 5 executions, all in hours with a nearby alert → 5 correlated.
+      // T1486: 2 executions, far from any alert → 0 correlated.
+      // Per-execution rate = 5 / 7 = 71.4%.
       expect(result.overall.testedTechniques).toBe(2);
       expect(result.overall.detectedTechniques).toBe(1);
-      expect(result.overall.detectionRate).toBe(50);
+      expect(result.overall.totalExecutions).toBe(7);
+      expect(result.overall.correlatedExecutions).toBe(5);
+      expect(result.overall.detectionRate).toBe(71.4);
 
       // T1003 detected, T1486 not
       const t1003 = result.byTechnique.find((t) => t.technique === 'T1003');
       expect(t1003).toBeDefined();
       expect(t1003!.detected).toBe(true);
-      expect(t1003!.correlatedAlerts).toBeGreaterThan(0);
+      expect(t1003!.correlatedExecutions).toBe(5);
 
       const t1486 = result.byTechnique.find((t) => t.technique === 'T1486');
       expect(t1486).toBeDefined();
       expect(t1486!.detected).toBe(false);
-      expect(t1486!.correlatedAlerts).toBe(0);
+      expect(t1486!.correlatedExecutions).toBe(0);
     });
 
     it('returns zero detection rate when no tests exist', async () => {
@@ -629,11 +654,13 @@ describe('DefenderAnalyticsService', () => {
 
       expect(result.overall.testedTechniques).toBe(0);
       expect(result.overall.detectedTechniques).toBe(0);
+      expect(result.overall.totalExecutions).toBe(0);
+      expect(result.overall.correlatedExecutions).toBe(0);
       expect(result.overall.detectionRate).toBe(0);
       expect(result.byTechnique).toEqual([]);
     });
 
-    it('excludes cyber-hygiene controls from test query', async () => {
+    it('excludes cyber-hygiene controls and skipped bundle stages from test query', async () => {
       mockSearch.mockResolvedValueOnce({
         hits: { total: { value: 0 }, hits: [] },
         aggregations: { techniques: { buckets: [] } },
@@ -645,10 +672,12 @@ describe('DefenderAnalyticsService', () => {
 
       await service.getDetectionRate(30, 60);
 
-      // First call is the test results query — should exclude cyber-hygiene
+      // First call is the test results query. It must exclude cyber-hygiene
+      // controls AND skipped bundle stages (bundle controls that exited 0,
+      // i.e. never ran) — neither can be meaningfully "detected".
       const testQuery = mockSearch.mock.calls[0][0] as Record<string, unknown>;
       const bool = (testQuery.query as Record<string, unknown>).bool as Record<string, unknown>;
-      expect(bool.must_not).toEqual([{ term: { 'f0rtika.category': 'cyber-hygiene' } }]);
+      expect(bool.must_not).toEqual(attackSimulationExclusions());
     });
 
     it('sorts detected techniques before undetected', async () => {
@@ -683,6 +712,114 @@ describe('DefenderAnalyticsService', () => {
       expect(result.byTechnique[0].detected).toBe(true);
       expect(result.byTechnique[1].technique).toBe('T1486');
       expect(result.byTechnique[1].detected).toBe(false);
+    });
+
+    it('credits a sub-technique test when only the parent technique has an alert (MITRE roll-up)', async () => {
+      const baseTime = new Date('2026-02-25T10:00:00Z').getTime();
+
+      // Test: T1574.002 (DLL Side-Loading), 4 executions in one hour.
+      mockSearch.mockResolvedValueOnce({
+        hits: { total: { value: 0 }, hits: [] },
+        aggregations: {
+          techniques: {
+            buckets: [
+              { key: 'T1574.002', doc_count: 4, by_hour: { buckets: [{ key: baseTime, doc_count: 4 }] } },
+            ],
+          },
+        },
+      });
+      // Alert tagged with the PARENT T1574 only — no T1574.002 alert exists.
+      mockSearch.mockResolvedValueOnce({
+        hits: { total: { value: 0 }, hits: [] },
+        aggregations: {
+          techniques: {
+            buckets: [
+              { key: 'T1574', doc_count: 1, by_hour: { buckets: [{ key: baseTime, doc_count: 1 }] } },
+            ],
+          },
+        },
+      });
+
+      const result = await service.getDetectionRate(30, 60);
+
+      const sub = result.byTechnique.find((t) => t.technique === 'T1574.002');
+      expect(sub).toBeDefined();
+      expect(sub!.detected).toBe(true);
+      expect(sub!.correlatedExecutions).toBe(4);
+      expect(result.overall.detectionRate).toBe(100);
+    });
+
+    it('does NOT credit a parent-technique test from a sub-technique alert (roll-up is one-directional)', async () => {
+      const baseTime = new Date('2026-02-25T10:00:00Z').getTime();
+
+      // Test: T1574 (parent), 4 executions.
+      mockSearch.mockResolvedValueOnce({
+        hits: { total: { value: 0 }, hits: [] },
+        aggregations: {
+          techniques: {
+            buckets: [
+              { key: 'T1574', doc_count: 4, by_hour: { buckets: [{ key: baseTime, doc_count: 4 }] } },
+            ],
+          },
+        },
+      });
+      // Alert tagged with a sub-technique T1574.002 only.
+      mockSearch.mockResolvedValueOnce({
+        hits: { total: { value: 0 }, hits: [] },
+        aggregations: {
+          techniques: {
+            buckets: [
+              { key: 'T1574.002', doc_count: 1, by_hour: { buckets: [{ key: baseTime, doc_count: 1 }] } },
+            ],
+          },
+        },
+      });
+
+      const result = await service.getDetectionRate(30, 60);
+
+      const parent = result.byTechnique.find((t) => t.technique === 'T1574');
+      expect(parent).toBeDefined();
+      expect(parent!.detected).toBe(false);
+      expect(parent!.correlatedExecutions).toBe(0);
+      expect(result.overall.detectionRate).toBe(0);
+    });
+
+    it('weights the detection rate by executions, not by technique count', async () => {
+      const baseTime = new Date('2026-02-25T10:00:00Z').getTime();
+      const hour = 3600000;
+
+      // T1003: 9 executions, all correlated. T1486: 1 execution, uncorrelated.
+      // A technique-count rate would be 1/2 = 50%. The per-execution rate is
+      // 9/10 = 90% — the metric must reflect attack volume, not catalog size.
+      mockSearch.mockResolvedValueOnce({
+        hits: { total: { value: 0 }, hits: [] },
+        aggregations: {
+          techniques: {
+            buckets: [
+              { key: 'T1003', doc_count: 9, by_hour: { buckets: [{ key: baseTime, doc_count: 9 }] } },
+              { key: 'T1486', doc_count: 1, by_hour: { buckets: [{ key: baseTime + 10 * hour, doc_count: 1 }] } },
+            ],
+          },
+        },
+      });
+      mockSearch.mockResolvedValueOnce({
+        hits: { total: { value: 0 }, hits: [] },
+        aggregations: {
+          techniques: {
+            buckets: [
+              { key: 'T1003', doc_count: 1, by_hour: { buckets: [{ key: baseTime, doc_count: 1 }] } },
+            ],
+          },
+        },
+      });
+
+      const result = await service.getDetectionRate(30, 60);
+
+      expect(result.overall.totalExecutions).toBe(10);
+      expect(result.overall.correlatedExecutions).toBe(9);
+      expect(result.overall.detectionRate).toBe(90);
+      expect(result.overall.testedTechniques).toBe(2);
+      expect(result.overall.detectedTechniques).toBe(1);
     });
   });
 
@@ -772,18 +909,28 @@ describe('DefenderAnalyticsService', () => {
 
       const searchCall = mockSearch.mock.calls[0][0];
 
-      // Verify time window: -5 min to +30 min around test (11:55 to 12:30)
-      const rangeFilter = searchCall.query.bool.must.find(
-        (f: Record<string, unknown>) => 'range' in f
-      );
-      expect(rangeFilter).toBeDefined();
-      expect(rangeFilter.range.timestamp.gte).toBe('2026-02-25T11:55:00.000Z');
-      expect(rangeFilter.range.timestamp.lte).toBe('2026-02-25T12:30:00.000Z');
+      // The time-window filter is now a bool/should over both `timestamp`
+      // and `created_at` (see buildAlertTimeWindowQuery). Verify both
+      // ranges carry the same -5 / +30 min bounds around the test time.
+      const must = searchCall.query.bool.must as Array<Record<string, unknown>>;
+      const windowWrapper = must.find((f: any) =>
+        'bool' in f && Array.isArray(f.bool.should) && f.bool.should.some((s: any) =>
+          'range' in s && 'timestamp' in s.range,
+        ),
+      ) as any;
+      expect(windowWrapper).toBeDefined();
+      expect(windowWrapper.bool.minimum_should_match).toBe(1);
+
+      const tsRange = windowWrapper.bool.should.find((s: any) => 'range' in s && 'timestamp' in s.range);
+      expect(tsRange.range.timestamp.gte).toBe('2026-02-25T11:55:00.000Z');
+      expect(tsRange.range.timestamp.lte).toBe('2026-02-25T12:30:00.000Z');
+
+      const createdRange = windowWrapper.bool.should.find((s: any) => 'range' in s && 'created_at' in s.range);
+      expect(createdRange.range.created_at.gte).toBe('2026-02-25T11:55:00.000Z');
+      expect(createdRange.range.created_at.lte).toBe('2026-02-25T12:30:00.000Z');
 
       // Verify techniques filter (fallback path — no hostname/binaryName provided)
-      const termsFilter = searchCall.query.bool.must.find(
-        (f: Record<string, unknown>) => 'terms' in f
-      );
+      const termsFilter = must.find((f: any) => 'terms' in f) as any;
       expect(termsFilter).toBeDefined();
       expect(termsFilter.terms.mitre_techniques).toEqual(['T1003', 'T1059']);
     });
