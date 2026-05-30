@@ -9,7 +9,8 @@
 ## TL;DR
 
 - El "agente" es un programa pequeño (~8 MB) que instalas en cada máquina que quieres monitorear
-- El proceso tiene 3 pasos: generar un token → copiar el comando → ejecutarlo en la máquina
+- Una sola vez, publicas el binario del agente en tu servidor (`Settings → Agent → Build Binary`); luego enrolas todas las máquinas que quieras
+- El proceso de enrolamiento tiene 3 pasos: generar un token → copiar el comando → ejecutarlo en la máquina
 - Funciona en Windows, Linux y macOS
 - Una vez instalado, la máquina aparece como "online" en el dashboard en menos de 1 minuto
 - No necesitas abrir puertos ni configurar firewalls — el agente se conecta hacia afuera (como un navegador)
@@ -25,6 +26,80 @@ El agente de Achilles es un programa pequeño que vive en cada máquina que quie
 3. **Reporta los resultados** de vuelta al dashboard
 
 Es un programa liviano. No consume recursos notables. No afecta el rendimiento de la máquina. Y para desinstalarlo, un comando y listo.
+
+---
+
+## Prerrequisito: Publicar el Binario del Agente (una sola vez)
+
+Antes de poder enrolar máquinas, tu servidor Achilles necesita tener **publicado al menos un binario del agente** para cada plataforma que vayas a usar (Windows, Linux, macOS). El comando de instalación descarga ese binario desde tu servidor — si no hay ninguno publicado, la descarga falla con un error `404: "No version available for this platform"`.
+
+Es un paso de administrador que haces **una sola vez** por plataforma (y lo repites solo cuando saques una versión nueva del agente). Hay dos formas de hacerlo — usa la que te funcione.
+
+### Opción A — Construir en el servidor (recomendado)
+
+Desde el dashboard:
+
+```
+Settings → pestaña "Agent" → tarjeta "Build Agent Binary"
+```
+
+Rellena los tres campos y haz click en **Build Binary**:
+
+```
+Version:            0.5.0            ← número de versión (el formulario sugiere el siguiente)
+Operating System:   Windows          ← Linux | Windows | macOS
+Architecture:       x86_64 (amd64)   ← x86_64 (amd64) | ARM64
+
+[ 🔨 Build Binary ]
+```
+
+El servidor cross-compila el agente desde el código fuente (puede tardar hasta un minuto). Cuando termina, el binario aparece en la tarjeta **"Registered Versions"** de la misma página, listo para descargar.
+
+> **Repite el build por cada plataforma que vayas a enrolar.** Si tienes máquinas Windows y Linux, construye `Windows / amd64` y `Linux / amd64` por separado. La arquitectura ARM64 solo aplica a servidores con CPU ARM (algunas VMs en la nube, Macs Apple Silicon, Raspberry Pi).
+
+> **Verificación rápida:** en la tarjeta "Registered Versions" debes ver al menos una fila con tu versión, OS y arquitectura. Si está vacía, el build no se completó — revisa el mensaje de error en la tarjeta de build.
+
+### Opción B — Construir localmente y subir (si el build en el servidor falla)
+
+En servidores con poca RAM (por ejemplo, un droplet de 1 GB en DigitalOcean), el "Build from Source" puede fallar: la cross-compilación de Go agota la memoria y el proceso muere. La alternativa es **compilar el binario en tu máquina** y subirlo ya hecho.
+
+**1) Compila el agente en tu máquina** (necesitas [Go](https://go.dev/dl/) instalado, versión ≥ la indicada en `agent/go.mod`):
+
+```bash
+cd agent
+
+# Windows (x86_64)
+make build-windows        # genera dist/achilles-agent-windows-amd64.exe
+
+# Otras plataformas, según necesites:
+make build-linux          # dist/achilles-agent-linux-amd64
+make build-darwin-arm64   # dist/achilles-agent-darwin-arm64   (Mac Apple Silicon)
+make build-darwin-amd64   # dist/achilles-agent-darwin-amd64   (Mac Intel)
+make build-all            # las cuatro plataformas de una vez
+```
+
+> El número de versión sale del `Makefile` (línea `VERSION := ...`) — anótalo, lo necesitas al subir.
+
+**2) Sube el binario** en el dashboard:
+
+```
+Settings → pestaña "Agent" → tarjeta "Upload Agent Binary"
+
+   Version:            0.6.2            ← la misma del Makefile
+   Operating System:   Windows          ← Linux | Windows | macOS
+   Architecture:       x86_64 (amd64)   ← x86_64 (amd64) | ARM64
+   File:               achilles-agent-windows-amd64.exe
+
+   [ Upload ]
+```
+
+Igual que en la Opción A, debe aparecer en **"Registered Versions"**.
+
+> **Firma:** el binario compilado así va **sin firmar** a menos que uses `make sign-windows` (requiere un certificado configurado). Un agente sin firma puede ser bloqueado por Windows Defender en la máquina objetivo — ver el troubleshooting al final de este post.
+
+---
+
+Una vez publicado el binario (por cualquiera de las dos opciones), sigue con los 3 pasos de enrolamiento.
 
 ---
 
@@ -208,6 +283,17 @@ macOS — verificar el servicio:
 
 Causa habitual: la URL del servidor está mal o hay un firewall bloqueando
 el puerto 3000 entre la máquina y el servidor Achilles.
+```
+
+**La descarga falla con "404: No version available for this platform":**
+```
+No has publicado el binario del agente para esa plataforma todavía.
+Ve al prerrequisito al inicio de este post y publícalo:
+  - Opción A: Settings → Agent → Build Agent Binary (construye en el servidor)
+  - Opción B: compila local con `make build-<plataforma>` y súbelo en
+              Settings → Agent → Upload Agent Binary (si el build del servidor falla)
+
+Verifica que aparezca en "Registered Versions" antes de reintentar.
 ```
 
 **El token dice "inválido" o "expirado":**
