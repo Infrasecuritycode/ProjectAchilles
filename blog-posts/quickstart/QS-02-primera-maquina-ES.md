@@ -55,13 +55,15 @@ Architecture:       x86_64 (amd64)   ← x86_64 (amd64) | ARM64
 
 El servidor cross-compila el agente desde el código fuente (puede tardar hasta un minuto). Cuando termina, el binario aparece en la tarjeta **"Registered Versions"** de la misma página, listo para descargar.
 
+> **Si desplegaste con el instalador de DigitalOcean** (`scripts/deploy-do/`), el droplet ya tiene Go instalado automáticamente (lo hace la Phase 10 del deployer), así que el "Build from Source" funciona de entrada — no necesitas instalar Go a mano. En servidores donde montaste Achilles por tu cuenta, el build requiere que Go (≥ la versión de `agent/go.mod`) esté instalado en el backend; si falta, el build falla con `Command failed: go ... spawn go ENOENT` y tendrás que instalarlo o usar la Opción B.
+
 > **Repite el build por cada plataforma que vayas a enrolar.** Si tienes máquinas Windows y Linux, construye `Windows / amd64` y `Linux / amd64` por separado. La arquitectura ARM64 solo aplica a servidores con CPU ARM (algunas VMs en la nube, Macs Apple Silicon, Raspberry Pi).
 
 > **Verificación rápida:** en la tarjeta "Registered Versions" debes ver al menos una fila con tu versión, OS y arquitectura. Si está vacía, el build no se completó — revisa el mensaje de error en la tarjeta de build.
 
 ### Opción B — Construir localmente y subir (si el build en el servidor falla)
 
-En servidores con poca RAM (por ejemplo, un droplet de 1 GB en DigitalOcean), el "Build from Source" puede fallar: la cross-compilación de Go agota la memoria y el proceso muere. La alternativa es **compilar el binario en tu máquina** y subirlo ya hecho.
+El "Build from Source" del servidor puede fallar por dos motivos: en servidores con poca RAM (por ejemplo, un droplet de 1 GB), la cross-compilación de Go agota la memoria y el proceso muere; o si Go no está instalado en el backend (build manual, sin el deployer de DigitalOcean) verás un error `spawn go ENOENT`. En cualquiera de los dos casos la alternativa es **compilar el binario en tu máquina** y subirlo ya hecho.
 
 **1) Compila el agente en tu máquina** (necesitas [Go](https://go.dev/dl/) instalado, versión ≥ la indicada en `agent/go.mod`):
 
