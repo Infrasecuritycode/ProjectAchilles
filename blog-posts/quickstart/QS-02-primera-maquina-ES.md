@@ -14,6 +14,7 @@
 - Funciona en Windows, Linux y macOS
 - Una vez instalado, la máquina aparece como "online" en el dashboard en menos de 1 minuto
 - No necesitas abrir puertos ni configurar firewalls — el agente se conecta hacia afuera (como un navegador)
+- Si tu servidor está en una IP/dominio remoto (no en `localhost`), el agente **exige HTTPS** — lo consigues con un dominio + Caddy, o con un túnel de dominio estático (ngrok/Cloudflare). Ver la sección de HTTPS más abajo
 
 ---
 
@@ -105,6 +106,58 @@ Una vez publicado el binario (por cualquiera de las dos opciones), sigue con los
 
 ---
 
+## Prerrequisito: HTTPS (si tu servidor no es local)
+
+Por seguridad, **el agente se niega a enrolarse contra un servidor remoto por HTTP plano**. El enrolamiento envía credenciales (el token y la clave del agente), y el agente no las manda sin cifrar. Su regla es:
+
+```
+http://localhost:3000  o  http://127.0.0.1:3000   → permitido (solo pruebas en la misma máquina)
+http://<IP-o-dominio-remoto>:3000                  → RECHAZADO
+https://<tu-dominio>                               → permitido
+```
+
+Si tu servidor Achilles vive en una IP o VM en la nube (no en tu `localhost`), **necesitas HTTPS** o el enrolamiento falla con:
+
+```
+refusing to enroll: server URL "http://203.0.113.10:3000" uses plaintext HTTP
+to a remote host; use https:// or connect to localhost for development
+```
+
+Hay dos formas de ponerle HTTPS a tu servidor — elige según tengas dominio o no.
+
+### Opción A — Dominio + Caddy (recomendado para producción)
+
+Apuntas un registro `A` de tu dominio (o un subdominio, p. ej. `achilles.tudominio.com`) a la IP del servidor, y Caddy obtiene el certificado de Let's Encrypt automáticamente. Es lo que hace el **deployer de DigitalOcean** (`scripts/deploy-do/`, fase `caddy_tls`), así que si desplegaste con él ya tienes HTTPS y URL estable sin tocar nada. El agente le habla directo al servidor — sin procesos intermedios que cuidar.
+
+### Opción B — Túnel con dominio estático (sin dominio propio)
+
+Si no tienes un dominio, un túnel te da una URL `https://` pública apuntando a tu backend (`localhost:3000` dentro del servidor):
+
+- **ngrok** (free): reserva **1 dominio estático** en tu cuenta (`https://algo.ngrok-free.dev`) y córrelo como **servicio systemd** en el servidor para que sobreviva reinicios. La URL no cambia.
+- **Cloudflare Tunnel**: `cloudflared tunnel --url http://localhost:3000` da una URL `trycloudflare.com` al instante (sin cuenta), pero **es efímera** (cambia en cada reinicio) — útil solo para una prueba rápida. Para algo estable usa un *named tunnel* (requiere dominio en Cloudflare).
+
+> En redes que bloquean UDP, `cloudflared` falla al conectar por QUIC — fuérzalo a TCP con `--protocol http2`.
+
+### Importante: configura `AGENT_SERVER_URL`
+
+Aunque pases `--server https://...` en el comando, **el servidor le devuelve al agente su propia URL pública** durante el enrolamiento. Esa URL sale de la variable de entorno `AGENT_SERVER_URL` del backend. Si sigue en `http://...`, el agente la rechaza con:
+
+```
+server returned insecure URL: server URL "http://203.0.113.10:3000" uses plaintext HTTP...
+```
+
+La solución: en el backend, pon `AGENT_SERVER_URL` con tu URL `https://` y reinícialo. En Docker Compose:
+
+```bash
+# en el servidor, dentro de la carpeta del proyecto
+sed -i 's|^AGENT_SERVER_URL=.*|AGENT_SERVER_URL=https://tu-url|' backend/.env
+docker compose up -d --force-recreate backend
+```
+
+Con el deployer de DigitalOcean esto ya queda apuntando a tu dominio. El dashboard también usa esta variable para **generar los comandos de instalación**, así que una vez bien configurada, los comandos que copies del panel ya vienen con la URL `https` correcta.
+
+---
+
 ## Paso 1: Generar un Token de Instalación
 
 El token es un código único que le dice al agente "perteneces a esta cuenta de Achilles".
@@ -179,9 +232,9 @@ curl -fSL "http://<tu-servidor>/api/agent/download?os=darwin&arch=amd64" \
 
 > **`<tu-servidor>`** es la URL que configuraste en QS-01:
 > - Instalación local: `http://localhost:3000`
-> - DigitalOcean: `http://<IP-pública>:3000`
+> - Servidor remoto: `https://<tu-dominio>` o `https://<tu-url-de-túnel>` — **debe ser `https`** (ver la sección de HTTPS más arriba). El `http://<IP>:3000` pelado solo sirve si el agente corre en la misma máquina que el servidor.
 >
-> El dashboard ya rellena esto automáticamente en los comandos que muestra — solo copia y pega.
+> El dashboard ya rellena esto automáticamente en los comandos que muestra (a partir de `AGENT_SERVER_URL`) — solo copia y pega.
 
 ---
 
@@ -289,20 +342,83 @@ el puerto 3000 entre la máquina y el servidor Achilles.
 
 **La descarga falla con "404: No version available for this platform":**
 ```
-No has publicado el binario del agente para esa plataforma todavía.
-Ve al prerrequisito al inicio de este post y publícalo:
-  - Opción A: Settings → Agent → Build Agent Binary (construye en el servidor)
-  - Opción B: compila local con `make build-<plataforma>` y súbelo en
-              Settings → Agent → Upload Agent Binary (si el build del servidor falla)
+Dos causas posibles:
 
-Verifica que aparezca en "Registered Versions" antes de reintentar.
+1) No has publicado el binario para esa plataforma todavía.
+   Ve al prerrequisito al inicio de este post y publícalo.
+
+2) ARQUITECTURA equivocada: publicaste, por ejemplo, windows/arm64
+   pero la máquina pide windows/amd64 (el comando lleva ?arch=amd64).
+   La mayoría de las máquinas/servidores Windows son x86_64 (amd64);
+   ARM64 es raro. En "Registered Versions" comprueba que la fila
+   coincida con el OS Y la arquitectura del comando.
+   Para saber la arquitectura del Windows objetivo:
+     echo $env:PROCESSOR_ARCHITECTURE   (AMD64 → amd64 ; ARM64 → arm64)
+
+Verifica que aparezca la fila correcta en "Registered Versions" antes de reintentar.
 ```
 
-**El token dice "inválido" o "expirado":**
+**El build en el servidor falla con "504" (timeout) o el proceso muere:**
 ```
-Los tokens expiran según el TTL configurado.
-Genera uno nuevo en:
+Servidor con poca RAM (p. ej. droplet de 1 GB): la cross-compilación de
+Go agota la memoria y el reverse proxy corta por timeout (504).
+
+Solución: compila el binario en TU máquina y súbelo (Opción B del
+prerrequisito) — evita por completo el build en el servidor:
+  cd agent && make build-windows
+  → Settings → Agent → Upload Agent Binary
+
+(Opcional: darle swap al servidor permite que el build en servidor
+complete, pero en 1 GB conviene quedarse con build local + upload.)
+```
+
+**El enrolamiento falla con "refusing to enroll: ... plaintext HTTP" o "server returned insecure URL":**
+```
+El agente exige HTTPS para servidores remotos. Esto NO se arregla en la
+máquina objetivo — se arregla en el servidor. Ver la sección
+"Prerrequisito: HTTPS" de este post:
+  - Ponle HTTPS al servidor (dominio + Caddy, o túnel con dominio estático)
+  - Y configura AGENT_SERVER_URL=https://... en el backend, y reinícialo
+
+El flag --allow-insecure NO sirve para esto (solo relaja la verificación
+de certificados en URLs https, no permite http plano).
+```
+
+**El token dice "inválido" o "expirado" (HTTP 401):**
+```
+Los tokens expiran según el TTL y son de un solo uso por defecto
+(Max Uses: 1). Ojo: un intento que llega al servidor pero falla DESPUÉS
+(p. ej. el agente rechaza la URL insegura) igual puede consumir el uso.
+Genera uno nuevo y úsalo de inmediato:
   Endpoints → Agents → "Enroll Agent" → Generate Token
+```
+
+**En PowerShell el comando se "parte" (Missing argument for OutFile / --server, o ".\agent.exe not recognized"):**
+```
+Al pegar comandos de una sola línea muy larga, algunas terminales meten
+un salto de línea en medio y lo rompen. Soluciones:
+
+  - Descarga con curl.exe (incluido en Windows 10/11), más corto:
+      curl.exe "https://<tu-servidor>/api/agent/download?os=windows&arch=amd64" -o agent.exe
+
+  - Y enrola usando variables en líneas cortas (no se parten):
+      $token  = "acht_..."
+      $server = "https://<tu-servidor>"
+      .\agent.exe --enroll $token --server $server --install
+```
+
+**El agente estaba online y de golpe se desconectó (tras cambiar la URL del servidor):**
+```
+El agente guarda la URL del servidor que recibió al enrolarse. Si esa URL
+cambia (típico con un túnel EFÍMERO como trycloudflare, que cambia en cada
+reinicio), el agente queda hablándole a una URL muerta.
+
+Solución: usa una URL ESTABLE (dominio + Caddy, o dominio estático de ngrok)
+y reenrola contra la URL nueva, en la máquina objetivo:
+  .\agent.exe --uninstall
+  $token  = "acht_<token-nuevo>"
+  $server = "https://<url-estable>"
+  .\agent.exe --enroll $token --server $server --install
 ```
 
 **Windows Defender bloqueó el ejecutable:**
@@ -344,4 +460,4 @@ Ya tienes una máquina conectada. Exploramos el dashboard de Achilles: qué mues
 
 *Parte 2 de 6 en la serie "Empezando con Project Achilles".*
 
-**Autor:** Kendra Mazara | **Fecha:** Mayo 2026
+**Autor:** Kendra Mazara | **Fecha:** Mayo 2026 (actualizado: junio 2026)
